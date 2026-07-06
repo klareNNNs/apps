@@ -3,701 +3,249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Print Sculpt Render - Warhammer Miniatures</title>
-  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
-  <script>tailwind.config = { corePlugins: { preflight: true } }</script>
+  <title>Apps</title>
   <style>
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border:1px solid rgba(255,255,255,0.1); }
-    .loader { border:4px solid rgba(255,255,255,0.1); border-top:4px solid #f97316; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; }
-    @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
-    .toggle-checkbox:checked { right: 0; border-color: #f97316; }
-    .toggle-checkbox:checked + .toggle-label { background-color: #f97316; }
-    .radio-option { cursor: pointer; transition: all 0.2s; }
-    .radio-option:hover { background: rgba(255,255,255,0.1); }
-    .radio-option.selected { background: rgba(249,115,22,0.2); border-color: #f97316; }
+    :root {
+      --bg: #101114;
+      --panel: #181b20;
+      --panel-strong: #20242b;
+      --text: #f1f3f5;
+      --muted: #9aa4b2;
+      --line: #2d333d;
+      --green: #7a9a60;
+      --orange: #f97316;
+      --blue: #5aa9d6;
+      --violet: #8b7cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(122, 154, 96, 0.15), transparent 32rem),
+        radial-gradient(circle at 86% 12%, rgba(90, 169, 214, 0.12), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 34px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .summary {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 28px;
+    }
+
+    .repo-pill {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 8px 13px;
+      text-decoration: none;
+    }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      margin: 28px 0 14px;
+      text-transform: uppercase;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 16px;
+    }
+
+    .app-card {
+      min-height: 210px;
+      background: rgba(24, 27, 32, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      text-decoration: none;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .app-card:hover {
+      background: var(--panel-strong);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .app-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .app-card h2 {
+      font-size: 1.18rem;
+      line-height: 1.25;
+    }
+
+    .app-card p {
+      color: var(--muted);
+      font-size: 0.93rem;
+      flex: 1;
+    }
+
+    .app-path {
+      color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.78rem;
+      overflow-wrap: anywhere;
+    }
+
+    .orange { --accent: var(--orange); }
+    .green { --accent: var(--green); }
+    .blue { --accent: var(--blue); }
+    .violet { --accent: var(--violet); }
+
+    @media (max-width: 680px) {
+      .page {
+        width: min(100% - 24px, 1120px);
+        padding: 24px 0;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .app-card {
+        min-height: 0;
+      }
+    }
   </style>
 </head>
-
-<body class="bg-[#0f0f12] text-white min-h-screen flex flex-col items-center p-4 md:p-12">
-
-<header class="text-center mb-10">
-  <div class="inline-block px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs mb-4 uppercase tracking-widest">
-    3D Print Reference Tool
-  </div>
-  <h1 class="text-5xl font-extrabold bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
-    Escultor Digital AI
-  </h1>
-  <p class="text-slate-400 mt-3 text-lg">
-    Warhammer: The Old World – Generador de Referencias
-  </p>
-</header>
-
-<main class="w-full max-w-5xl glass rounded-[2rem] p-8 shadow-2xl">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-    <div class="lg:col-span-5 flex flex-col gap-6">
-
-      <!-- Interruptor de Modo Libre -->
-      <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
-        <div>
-          <span class="block text-sm font-bold uppercase text-orange-400">Modo Libre (Solo Prompt)</span>
-          <span class="text-[10px] text-slate-500 italic">Ignora reglas de peanas y armas automáticas</span>
-        </div>
-        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-          <input type="checkbox" name="toggle" id="modeToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none transition-all duration-300"/>
-          <label for="modeToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer"></label>
-        </div>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span class="eyebrow">Workspace</span>
+        <h1>Apps</h1>
       </div>
-
-      <label class="text-sm font-semibold uppercase tracking-wider text-slate-300">
-        Descripción de la miniatura
-      </label>
-
-      <textarea id="promptInput"
-                class="w-full h-32 bg-black/40 border border-white/10 rounded-2xl p-4 resize-none text-slate-200 focus:ring-2 focus:ring-orange-500/50 outline-none"
-                placeholder="Ej: A powerful chaos lord, extreme detail, obsidian armor..."></textarea>
-
-      <div id="logicControls" class="flex flex-col gap-4">
-
-        <!-- Tipo de Unidad -->
-        <div>
-          <span class="text-xs font-bold text-slate-500 uppercase">Tipo de Unidad</span>
-          <div class="grid grid-cols-3 gap-2 mt-2">
-            <button id="btnInfLigera" onclick="setUnitType('infanteriaLigera')" class="ring-2 ring-purple-500 bg-purple-500/20 py-2 rounded-xl text-xs transition-all">Inf. Ligera</button>
-            <button id="btnInfPesada" onclick="setUnitType('infanteriaPesada')" class="bg-white/5 py-2 rounded-xl text-xs transition-all border border-white/5">Inf. Pesada</button>
-            <button id="btnCabLigera" onclick="setUnitType('caballeriaLigera')" class="bg-white/5 py-2 rounded-xl text-xs transition-all border border-white/5">Cab. Ligera</button>
-            <button id="btnCabPesada" onclick="setUnitType('caballeriaPesada')" class="bg-white/5 py-2 rounded-xl text-xs transition-all border border-white/5">Cab. Pesada</button>
-            <button id="btnMonstruo" onclick="setUnitType('monstruo')" class="bg-white/5 py-2 rounded-xl text-xs transition-all border border-white/5">Monstruo</button>
-          </div>
-        </div>
-
-        <!-- Selector de Cabeza -->
-        <div>
-          <span class="text-xs font-bold text-slate-500 uppercase">Cabeza</span>
-          <div class="grid grid-cols-2 gap-2 mt-2">
-            <div id="headDescubierta" onclick="setHeadOption('descubierta')" class="radio-option selected p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Descubierta</span>
-            </div>
-            <div id="headCasco" onclick="setHeadOption('casco')" class="radio-option p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Casco</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Selector de Armamento -->
-        <div>
-          <span class="text-xs font-bold text-slate-500 uppercase">Armamento</span>
-          <div class="grid grid-cols-2 gap-2 mt-2">
-            <div id="weaponArmaManoEscudo" onclick="setWeaponOption('armaManoEscudo')" class="radio-option selected p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Arma + Escudo</span>
-            </div>
-            <div id="weaponLanza" onclick="setWeaponOption('lanza')" class="radio-option p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Lanza</span>
-            </div>
-            <div id="weaponDosManos" onclick="setWeaponOption('dosManos')" class="radio-option p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Dos Manos</span>
-            </div>
-            <div id="weaponSinArmas" onclick="setWeaponOption('sinArmas')" class="radio-option p-3 rounded-xl border border-white/10 text-center">
-              <span class="text-xs font-medium">Sin Armas</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Previsualización de opciones aleatorias -->
-      <div id="randomPreview" class="p-4 bg-black/40 rounded-2xl border border-white/10">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs font-bold text-slate-500 uppercase">Opciones Aleatorias</span>
-          <div class="flex gap-2">
-            <button onclick="previewPrompt()" class="text-xs bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-3 py-1 rounded-lg transition-all">
-              👁️ Ver Prompt
-            </button>
-            <button id="rerollBtn" onclick="rerollOptions()" class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg transition-all">
-              🎲 Reroll
-            </button>
-          </div>
-        </div>
-        <div class="space-y-1 text-xs">
-          <p><span class="text-slate-500">Pose:</span> <span id="previewPose" class="text-orange-300">-</span></p>
-          <p><span class="text-slate-500">Cabeza:</span> <span id="previewHead" class="text-orange-300">-</span></p>
-          <p><span class="text-slate-500">Arma:</span> <span id="previewWeapon" class="text-orange-300">-</span></p>
-        </div>
-      </div>
-
-      <button id="generateBtn" class="mt-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 py-4 rounded-2xl font-bold transition-all active:scale-95 disabled:opacity-50">
-        Generar Miniatura
-      </button>
-
-      <p id="btnSubtext" class="text-xs text-slate-400 uppercase tracking-widest text-center mt-2">
-        Infantería Ligera | Cabeza Descubierta | Arma + Escudo
-      </p>
-    </div>
-
-    <div class="lg:col-span-7">
-      <div class="relative aspect-square bg-black/60 rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden">
-
-        <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-20">
-          <div class="loader mb-4"></div>
-          <p id="loadingStatus" class="text-orange-400 uppercase tracking-widest animate-pulse">Forjando miniatura...</p>
-        </div>
-
-        <img id="previewImg" class="hidden w-full h-full object-contain p-4" alt="Miniatura generada">
-        <div id="placeholderText" class="text-slate-600 text-center px-10">
-          <p>Esperando generación...</p>
-          <p class="text-[10px] mt-2 opacity-50 uppercase tracking-widest">El Modo Libre enviará tu texto tal cual a la IA</p>
-        </div>
-
-      </div>
-
-      <!-- Prompt enviado -->
-      <div id="promptDisplay" class="hidden mt-4 p-4 bg-black/40 rounded-xl border border-white/10 max-h-48 overflow-y-auto">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-xs font-bold text-slate-500 uppercase">Prompt Enviado:</span>
-          <button onclick="copyPrompt(this)" class="text-xs bg-green-500/20 hover:bg-green-500/30 text-green-300 px-3 py-1 rounded-lg transition-all">
-            📋 Copiar
-          </button>
-        </div>
-        <p id="promptText" class="text-xs text-slate-400 whitespace-pre-wrap font-mono"></p>
-      </div>
-    </div>
-  </div>
-</main>
-
-<script>
-  const apiKey = "";
-
-  // Estado de la aplicación
-  let currentUnitType = "infanteriaLigera";
-  let currentHeadOption = "descubierta";
-  let currentWeaponOption = "armaManoEscudo";
-
-  // Opciones aleatorias pre-seleccionadas
-  let selectedPose = "";
-  let selectedHead = "";
-  let selectedWeapon = "";
-
-  // Configuración (las constantes anteriores ahora están integradas en el prompt optimizado)
-
-  // Tipos de unidad con sus bases y monturas
-  const UNIT_TYPES = {
-    infanteriaLigera: {
-      base: "SQUARE 25mm stone base with sharp 90-degree corners and perfectly straight flat edges",
-      mount: "",
-      label: "Infantería Ligera"
-    },
-    infanteriaPesada: {
-      base: "SQUARE 30mm stone base with sharp 90-degree corners and perfectly straight flat edges",
-      mount: "",
-      label: "Infantería Pesada"
-    },
-    caballeriaLigera: {
-      base: "RECTANGULAR 30x60mm stone base with sharp 90-degree corners and perfectly straight flat edges",
-      mount: "mounted on a fast unarmored horse",
-      label: "Caballería Ligera"
-    },
-    caballeriaPesada: {
-      base: "RECTANGULAR 30x60mm stone base with sharp 90-degree corners and perfectly straight flat edges",
-      mount: "large powerful chaos warhorse",
-      label: "Caballería Pesada"
-    },
-    monstruo: {
-      base: "RECTANGULAR 60x100mm large stone base with sharp 90-degree corners and perfectly straight flat edges",
-      mount: "",
-      label: "Monstruo"
-    }
-  };
-
-  // Opciones de cabeza con variedades
-  const HEAD_OPTIONS = {
-    descubierta: ["bald scarred head", "long wild hair", "braided hair with beads", "thick bushy beard"],
-    casco: [
-      // CUERNOS DE CARNERO MASIVOS
-      "sealed chaos war mask with gigantic curved ram horns spiraling outward, horns are twice the size of the head, covered in chaos runes",
-
-      "ritual head idol with massive spiral ram horns that curl around the sides, metal spikes along the crown, intimidating and demonic",
-
-      "enclosed chaos headpiece with enormous ram horns curving down past the shoulders, eight-pointed star on forehead, excessive and impractical",
-
-      // CUERNOS EXAGERADOS HACIA ARRIBA
-      "ceremonial chaos head idol with two impossibly tall straight horns pointing skyward, horns are taller than the entire body, covered in barbs",
-
-      "menacing sealed war mask with huge curved horns sweeping upward like a bull demon, metal spikes between the horns, chains hanging from them",
-
-      "towering ritual headpiece with three massive horns forming a crown shape, middle horn is enormous, all covered in chaos symbols",
-
-      // PINCHOS EXTREMOS
-      "spiky chaos head idol completely covered in long sharp metal spikes in all directions, like a metal sea urchin, brutal and excessive",
-
-      "sealed war mask with dozens of jagged spikes erupting from every surface, some spikes longer than the head itself, chaotic and aggressive",
-
-      "brutal spiked headpiece with thick metal spikes pointing forward like a battering ram, more spikes on top and sides, war machine aesthetic",
-
-      // COMBINACIONES EXTREMAS
-      "insane chaos head idol with both massive ram horns AND long spikes everywhere, chains and skulls hanging from the horns, over the top",
-
-      "demonic ritual mask with asymmetric horns - one huge spiral horn, one straight spike - covered in smaller spikes and chaos stars",
-
-      "monstrous chaos headpiece with bull horns, ram horns, AND a crown of spikes all together, dripping with chaos corruption, maximalist design"
-    ]
-  };
-
-  // Poses dinámicas para variedad
-  const DYNAMIC_POSES = [
-    "standing in a powerful heroic attack pose, mid-swing with the weapon",
-    "bracing in a heavy defensive guard stance with shield forward",
-    "marching forward with a determined and aggressive stride",
-    "standing triumphantly with weapon held high in a challenge pose",
-    "leaning forward in a low aggressive combat stance",
-    "lunging forward with weapon extended in a thrust attack",
-    "roaring a battle cry with weapon raised overhead",
-    "crouching low ready to spring into action",
-    "stepping over fallen debris mid-advance",
-    "turning to face an enemy with weapon at the ready",
-    "standing with weapon resting on shoulder in a confident pose",
-    "raising weapon in salute to the war gods",
-    "bracing against an impact with feet planted firmly",
-    "mid-parry deflecting an invisible blow",
-    "kneeling with weapon planted in the ground in reverence"
-  ];
-
-  const CAVALRY_POSES = [
-    "charging forward at high speed with the lance leveled for impact",
-    "rearing up the horse while holding the lance high in victory",
-    "advancing at a steady war-trot with shield raised",
-    "galloping with a dynamic and powerful sense of motion",
-    "horse mid-leap over an obstacle with rider braced",
-    "wheeling the horse around to face a new threat",
-    "horse rearing dramatically while rider raises weapon skyward",
-    "thundering charge with rider leaning forward aggressively",
-    "horse at full gallop with mane and tail flowing",
-    "rider turning in saddle to strike at a pursuing enemy",
-    "horse pawing the ground impatiently ready to charge",
-    "dynamic canter with rider holding weapon at the ready"
-  ];
-
-  // Opciones de armamento con variedades
-  const WEAPON_OPTIONS = {
-    armaManoEscudo: {
-      armas: ["broad brutal rune-sword", "massive one-handed battle axe", "heavy flanged iron mace", "giant war hammer"],
-      escudos: [
-        "massive round chaos shield with eight-pointed star emblem",
-        "tall rectangular tower shield bearing the chaos star",
-        "large oval shield with carved eight-pointed star of chaos",
-        "heavy square shield with spiked chaos star in the center"
-      ]
-    },
-    lanza: ["very long cavalry lance"],
-    dosManos: ["huge double-headed battle axe", "giant war hammer", "massive heavy iron pike"],
-    sinArmas: ["empty hands"]
-  };
-
-  // Etiquetas para el subtexto
-  const HEAD_LABELS = { descubierta: "Cabeza Descubierta", casco: "Casco" };
-  const WEAPON_LABELS = { armaManoEscudo: "Arma + Escudo", lanza: "Lanza", dosManos: "Dos Manos", sinArmas: "Sin Armas" };
-
-  function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-  function rerollOptions() {
-    // Seleccionar pose según tipo de unidad
-    const isCavalry = currentUnitType === "caballeriaLigera" || currentUnitType === "caballeriaPesada";
-    selectedPose = isCavalry ? rand(CAVALRY_POSES) : rand(DYNAMIC_POSES);
-
-    // Seleccionar cabeza
-    selectedHead = rand(HEAD_OPTIONS[currentHeadOption]);
-
-    // Seleccionar arma
-    if (currentWeaponOption === "armaManoEscudo") {
-      const arma = rand(WEAPON_OPTIONS.armaManoEscudo.armas);
-      const escudo = rand(WEAPON_OPTIONS.armaManoEscudo.escudos);
-      selectedWeapon = `${arma} + ${escudo}`;
-    } else if (currentWeaponOption === "lanza") {
-      const lanza = rand(WEAPON_OPTIONS.lanza);
-      const escudo = rand(WEAPON_OPTIONS.armaManoEscudo.escudos);
-      selectedWeapon = `${lanza} + ${escudo}`;
-    } else if (currentWeaponOption === "dosManos") {
-      selectedWeapon = rand(WEAPON_OPTIONS.dosManos);
-    } else {
-      selectedWeapon = rand(WEAPON_OPTIONS.sinArmas);
-    }
-
-    // Actualizar UI
-    document.getElementById('previewPose').textContent = selectedPose;
-    document.getElementById('previewHead').textContent = selectedHead;
-    document.getElementById('previewWeapon').textContent = selectedWeapon;
-  }
-
-  function updateSubtext() {
-    const subtext = document.getElementById('btnSubtext');
-    const unitLabel = UNIT_TYPES[currentUnitType].label;
-    const headLabel = HEAD_LABELS[currentHeadOption];
-    const weaponLabel = WEAPON_LABELS[currentWeaponOption];
-    subtext.innerText = `${unitLabel} | ${headLabel} | ${weaponLabel}`;
-  }
-
-  function setUnitType(type) {
-    currentUnitType = type;
-    const buttons = ['btnInfLigera', 'btnInfPesada', 'btnCabLigera', 'btnCabPesada', 'btnMonstruo'];
-    const typeToBtn = {
-      infanteriaLigera: 'btnInfLigera',
-      infanteriaPesada: 'btnInfPesada',
-      caballeriaLigera: 'btnCabLigera',
-      caballeriaPesada: 'btnCabPesada',
-      monstruo: 'btnMonstruo'
-    };
-
-    buttons.forEach(id => {
-      const btn = document.getElementById(id);
-      if (id === typeToBtn[type]) {
-        btn.className = "ring-2 ring-purple-500 bg-purple-500/20 py-2 rounded-xl text-xs transition-all";
-      } else {
-        btn.className = "bg-white/5 py-2 rounded-xl text-xs transition-all border border-white/5";
-      }
-    });
-    updateSubtext();
-    rerollOptions();
-  }
-
-  function setHeadOption(option) {
-    currentHeadOption = option;
-    document.getElementById('headDescubierta').classList.remove('selected');
-    document.getElementById('headCasco').classList.remove('selected');
-    document.getElementById(`head${option.charAt(0).toUpperCase() + option.slice(1)}`).classList.add('selected');
-    updateSubtext();
-    rerollOptions();
-  }
-
-  function setWeaponOption(option) {
-    currentWeaponOption = option;
-    const options = ['weaponArmaManoEscudo', 'weaponLanza', 'weaponDosManos', 'weaponSinArmas'];
-    const optionToId = {
-      armaManoEscudo: 'weaponArmaManoEscudo',
-      lanza: 'weaponLanza',
-      dosManos: 'weaponDosManos',
-      sinArmas: 'weaponSinArmas'
-    };
-
-    options.forEach(id => {
-      document.getElementById(id).classList.remove('selected');
-    });
-    document.getElementById(optionToId[option]).classList.add('selected');
-    updateSubtext();
-    rerollOptions();
-  }
-
-  function copyPrompt(btn) {
-    const promptText = document.getElementById("promptText").textContent;
-    navigator.clipboard.writeText(promptText).then(() => {
-      const originalText = btn.innerHTML;
-      btn.innerHTML = "✓ Copiado!";
-      btn.classList.remove("bg-green-500/20", "hover:bg-green-500/30", "text-green-300");
-      btn.classList.add("bg-green-600/40", "text-green-200");
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.classList.remove("bg-green-600/40", "text-green-200");
-        btn.classList.add("bg-green-500/20", "hover:bg-green-500/30", "text-green-300");
-      }, 2000);
-    });
-  }
-
-  function previewPrompt() {
-    const userPrompt = document.getElementById("promptInput").value;
-    const modeToggle = document.getElementById("modeToggle");
-    const promptDisplay = document.getElementById("promptDisplay");
-    const promptText = document.getElementById("promptText");
-
-    if (modeToggle.checked) {
-      promptText.textContent = "MODO LIBRE:\n\n" + userPrompt;
-      promptDisplay.classList.remove("hidden");
-      return;
-    }
-
-    // Generar preview del prompt guiado
-    const unitConfig = UNIT_TYPES[currentUnitType];
-    const isCavalry = currentUnitType === "caballeriaLigera" || currentUnitType === "caballeriaPesada";
-
-    if (!selectedPose || !selectedHead || !selectedWeapon) {
-      rerollOptions();
-    }
-
-    let miniatureType = isCavalry
-      ? (currentUnitType === "caballeriaPesada" ? "chaos/nordic heavy cavalry warrior miniature" : "chaos/nordic light cavalry warrior miniature")
-      : (currentUnitType === "monstruo" ? "chaos monster or beast miniature" : (currentUnitType === "infanteriaPesada" ? "chaos/nordic heavy infantry warrior miniature" : "chaos/nordic light infantry warrior miniature"));
-
-    let weaponDescription = "";
-    if (currentWeaponOption === "armaManoEscudo" || currentWeaponOption === "lanza") {
-      const parts = selectedWeapon.split(" + ");
-      weaponDescription = `The rider is holding a ${parts[0]} in the right hand and carrying a ${parts[1]} in the left hand. Both are clearly visible and prominent.`;
-    } else if (currentWeaponOption === "dosManos") {
-      weaponDescription = `The warrior is gripping a ${selectedWeapon} firmly with both hands. The weapon is clearly visible and prominent.`;
-    } else {
-      weaponDescription = "The warrior's hands are empty.";
-    }
-
-    let headDescription = currentHeadOption === "descubierta"
-      ? `Head: ${selectedHead}, bare head with no helmet or headgear.`
-      : `Headgear (CRITICAL): ritual chaos headpiece, NOT a functional helmet. A ${selectedHead}. The front is a single solid slab of metal with no facial features at all. NO eye holes, NO eye slits, NO visor, NO breathing holes, NO openings of any kind. Inhuman, symbolic, ceremonial, and intentionally blind. The headpiece resembles a solid metal statue or idol rather than headwear.`;
-
-    let armorDescription = (currentUnitType === "infanteriaLigera" || currentUnitType === "caballeriaLigera")
-      ? "light chainmail and leather armor with some exposed skin"
-      : (currentUnitType === "infanteriaPesada" || currentUnitType === "caballeriaPesada")
-        ? "heavy medieval fantasy chaos plate armor, flat and angular plates with sharp edges, minimal segmentation, no rounded shapes, no mechanical joints, simple brutal engravings"
-        : "monstrous proportions with thick hide or heavy armor plating";
-
-    let mountSection = "";
-    if (isCavalry) {
-      const horseType = currentUnitType === "caballeriaPesada"
-        ? "large powerful chaos warhorse in full thundering charge, wearing massive jagged plate barding covered in long sharp spikes, heavy iron chains hanging from armor plates, legs protected by spiked greaves, armor has cracked battle-damaged texture with chaotic engravings"
-        : "fast unarmored warhorse, agile and swift";
-      mountSection = `\nMOUNT (CRITICAL): The warrior is riding a ${horseType}. The horse is fully visible in the image. This is mounted cavalry, not infantry.`;
-    }
-
-    const preview = `Professional 3D render photograph of a tabletop ${isCavalry ? 'cavalry ' : ''}miniature, shot from slightly above, three-quarter view, showing the complete miniature from top to bottom with empty dark space below the base. The entire base${isCavalry ? ' and mount are' : ' is'} fully visible and centered in frame.
-
-Subject: Warhammer: The Old World ${miniatureType}. 28-32mm scale${isCavalry ? ' rider' : ' warrior'} with heroic proportions: thick limbs, wide torso, slightly oversized head and hands. Old-school Warhammer style, readable silhouette suitable for tabletop units. ${userPrompt}
-${mountSection}
-
-Pose: ${selectedPose}.
-
-WEAPONS AND EQUIPMENT (CRITICAL): ${weaponDescription}
-
-${headDescription}
-
-Armor: ${armorDescription}.
-
-Nordic barbarian details: large fur pelts and trims on shoulders, waist, upper arms, and back; rough cloth tabard, leather straps and belts. Fur is natural and irregular without obscuring the silhouette.
-
-Marking: A small eight-pointed chaos star is engraved somewhere on the armor.
-
-BASE (CRITICAL): The miniature is glued to a ${unitConfig.base}. The base is rectangular. Cracked stone texture. The entire base is fully visible at the bottom of the image.
-
-Material & Style: Solid uniform grey resin miniature, ZBrush sculpt style, smooth readable surfaces, low surface noise, neutral dark background, studio lighting.`;
-
-    let negativePreview = "warhammer 40k, space marine, power armor, sci-fi, futuristic helmet, gas mask, respirator, mechanical joints, modern fantasy style, cropped image, cut off limbs, missing base, partial figure";
-    if (currentHeadOption === "casco") {
-      negativePreview += ", functional helmet, practical helmet design, wearable helmet, visor, eye holes, eye slits, face visible, realistic helmet, medieval knight visor, T-shaped visor";
-    } else {
-      negativePreview += ", helmet, helm, headgear, mask";
-    }
-    if (isCavalry) {
-      negativePreview += ", infantry, on foot, dismounted, no horse";
-    }
-    if (currentWeaponOption !== "sinArmas") {
-      negativePreview += ", unarmed, empty hands, missing weapon";
-    }
-    if (currentWeaponOption === "dosManos") {
-      negativePreview += ", shield";
-    }
-
-    promptText.textContent = preview + "\n\n| Negative: " + negativePreview;
-    promptDisplay.classList.remove("hidden");
-  }
-
-  async function generateImage(){
-    const promptInput = document.getElementById("promptInput");
-    const modeToggle = document.getElementById("modeToggle");
-    const userPrompt = promptInput.value;
-
-    let finalPrompt = "";
-    let negativePrompt = "text, watermark, blurry, low quality, distorted hands, floating figure, no base, missing base, cut off base, cropped image, cropped legs, cropped feet, cut off limbs, partial figure, zoomed in too close, missing body parts";
-
-    // SI EL MODO LIBRE ESTÁ ACTIVADO
-    if (modeToggle.checked) {
-      finalPrompt = userPrompt;
-    } else {
-      // MODO GUIADO - PROMPT OPTIMIZADO
-      const unitConfig = UNIT_TYPES[currentUnitType];
-      const isCavalry = currentUnitType === "caballeriaLigera" || currentUnitType === "caballeriaPesada";
-
-      // Usar opciones pre-seleccionadas (si no hay, generar)
-      if (!selectedPose || !selectedHead || !selectedWeapon) {
-        rerollOptions();
-      }
-
-      // Determinar tipo de miniatura para el Subject
-      let miniatureType = "";
-      if (isCavalry) {
-        miniatureType = currentUnitType === "caballeriaPesada"
-          ? "chaos/nordic heavy cavalry warrior miniature"
-          : "chaos/nordic light cavalry warrior miniature";
-      } else if (currentUnitType === "monstruo") {
-        miniatureType = "chaos monster or beast miniature";
-      } else {
-        miniatureType = currentUnitType === "infanteriaPesada"
-          ? "chaos/nordic heavy infantry warrior miniature"
-          : "chaos/nordic light infantry warrior miniature";
-      }
-
-      // Construir descripción de armas (una sola vez)
-      let weaponDescription = "";
-      if (currentWeaponOption === "armaManoEscudo" || currentWeaponOption === "lanza") {
-        const parts = selectedWeapon.split(" + ");
-        weaponDescription = `The rider is holding a ${parts[0]} in the right hand and carrying a ${parts[1]} in the left hand. Both are clearly visible and prominent.`;
-      } else if (currentWeaponOption === "dosManos") {
-        weaponDescription = `The warrior is gripping a ${selectedWeapon} firmly with both hands. The weapon is clearly visible and prominent.`;
-      } else {
-        weaponDescription = "The warrior's hands are empty.";
-      }
-
-      // Construir descripción de cabeza (una sola vez)
-      let headDescription = "";
-      if (currentHeadOption === "descubierta") {
-        headDescription = `Head: ${selectedHead}, bare head with no helmet or headgear.`;
-      } else {
-        headDescription = `Headgear (CRITICAL): ritual chaos headpiece, NOT a functional helmet. A ${selectedHead}. The front is a single solid slab of metal with no facial features at all. NO eye holes, NO eye slits, NO visor, NO breathing holes, NO openings of any kind. Inhuman, symbolic, ceremonial, and intentionally blind. The headpiece resembles a solid metal statue or idol rather than headwear.`;
-      }
-
-      // Construir descripción de armadura
-      let armorDescription = "";
-      if (currentUnitType === "infanteriaLigera" || currentUnitType === "caballeriaLigera") {
-        armorDescription = "light chainmail and leather armor with some exposed skin";
-      } else if (currentUnitType === "infanteriaPesada" || currentUnitType === "caballeriaPesada") {
-        armorDescription = "heavy medieval fantasy chaos plate armor, flat and angular plates with sharp edges, minimal segmentation, no rounded shapes, no mechanical joints, simple brutal engravings";
-      } else {
-        armorDescription = "monstrous proportions with thick hide or heavy armor plating";
-      }
-
-      // Construir sección de montura (solo para caballería)
-      let mountSection = "";
-      if (isCavalry) {
-        const horseType = currentUnitType === "caballeriaPesada"
-          ? "large powerful chaos warhorse in full thundering charge, wearing massive jagged plate barding covered in long sharp spikes, heavy iron chains hanging from armor plates, legs protected by spiked greaves, armor has cracked battle-damaged texture with chaotic engravings"
-          : "fast unarmored warhorse, agile and swift";
-        mountSection = `
-MOUNT (CRITICAL): The warrior is riding a ${horseType}. The horse is fully visible in the image. This is mounted cavalry, not infantry.`;
-      }
-
-      // PROMPT OPTIMIZADO - Estructura limpia sin repeticiones
-      finalPrompt = `Professional 3D render photograph of a tabletop ${isCavalry ? 'cavalry ' : ''}miniature, shot from slightly above, three-quarter view, showing the complete miniature from top to bottom with empty dark space below the base. The entire base${isCavalry ? ' and mount are' : ' is'} fully visible and centered in frame.
-
-Subject: Warhammer: The Old World ${miniatureType}. 28-32mm scale${isCavalry ? ' rider' : ' warrior'} with heroic proportions: thick limbs, wide torso, slightly oversized head and hands. Old-school Warhammer style, readable silhouette suitable for tabletop units. ${userPrompt}
-${mountSection}
-
-Pose: ${selectedPose}.
-
-WEAPONS AND EQUIPMENT (CRITICAL): ${weaponDescription}
-
-${headDescription}
-
-Armor: ${armorDescription}.
-
-Nordic barbarian details: large fur pelts and trims on shoulders, waist, upper arms, and back; rough cloth tabard, leather straps and belts. Fur is natural and irregular without obscuring the silhouette.
-
-Marking: A small eight-pointed chaos star is engraved somewhere on the armor.
-
-BASE (CRITICAL): The miniature is glued to a ${unitConfig.base}. Cracked stone texture. The entire base is fully visible at the bottom of the image.
-
-Material & Style: Solid uniform grey resin miniature, ZBrush sculpt style, smooth readable surfaces, low surface noise, neutral dark background, studio lighting.`;
-
-      // NEGATIVE PROMPT - Conciso y sin repeticiones
-      negativePrompt = "warhammer 40k, space marine, power armor, sci-fi, futuristic helmet, gas mask, respirator, mechanical joints, modern fantasy style, cropped image, cut off limbs, missing base, partial figure";
-
-      // Añadir según cabeza
-      if (currentHeadOption === "casco") {
-        negativePrompt += ", functional helmet, practical helmet design, wearable helmet, visor, eye holes, eye slits, face visible, realistic helmet, medieval knight visor, T-shaped visor";
-      } else {
-        negativePrompt += ", helmet, helm, headgear, mask";
-      }
-
-      // Añadir según montura
-      if (isCavalry) {
-        negativePrompt += ", infantry, on foot, dismounted, no horse";
-      }
-
-      // Añadir según arma
-      if (currentWeaponOption !== "sinArmas") {
-        negativePrompt += ", unarmed, empty hands, missing weapon";
-      }
-      if (currentWeaponOption === "dosManos") {
-        negativePrompt += ", shield";
-      }
-    }
-
-    const loadingOverlay = document.getElementById("loadingOverlay");
-    const previewImg = document.getElementById("previewImg");
-    const placeholderText = document.getElementById("placeholderText");
-    const generateBtn = document.getElementById("generateBtn");
-    const promptDisplay = document.getElementById("promptDisplay");
-    const promptText = document.getElementById("promptText");
-
-    // Mostrar el prompt enviado
-    const fullPrompt = finalPrompt + " | Negative: " + negativePrompt;
-    promptText.textContent = fullPrompt;
-    promptDisplay.classList.remove("hidden");
-
-    loadingOverlay.classList.remove("hidden");
-    generateBtn.disabled = true;
-
-    let retryCount = 0;
-    const maxRetries = 5;
-
-    const attemptFetch = async () => {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            instances: [{ prompt: finalPrompt + " | Negative: " + negativePrompt }],
-            parameters: { sampleCount: 1 }
-          })
-        });
-
-        if (!response.ok) throw new Error("Fallo en la API");
-
-        const result = await response.json();
-        if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
-          previewImg.src = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-          previewImg.classList.remove("hidden");
-          placeholderText.classList.add("hidden");
-          loadingOverlay.classList.add("hidden");
-        } else {
-          throw new Error("Datos de imagen no encontrados");
-        }
-      } catch (error) {
-        if (retryCount < maxRetries) {
-          retryCount++;
-          const delay = Math.pow(2, retryCount) * 1000;
-          setTimeout(attemptFetch, delay);
-        } else {
-          alert("Error de conexión. Revisa el prompt o la red.");
-          loadingOverlay.classList.add("hidden");
-        }
-      } finally {
-        generateBtn.disabled = false;
-      }
-    };
-
-    attemptFetch();
-  }
-
-  document.getElementById("generateBtn").onclick = generateImage;
-
-  // Manejo del interruptor de modo libre
-  document.getElementById('modeToggle').addEventListener('change', function() {
-    const controls = document.getElementById('logicControls');
-    const subtext = document.getElementById('btnSubtext');
-    const randomPreview = document.getElementById('randomPreview');
-    if(this.checked) {
-      controls.style.opacity = "0.3";
-      controls.style.pointerEvents = "none";
-      randomPreview.style.opacity = "0.3";
-      randomPreview.style.pointerEvents = "none";
-      subtext.innerText = "Modo Libre Activado: La IA solo leerá tu prompt.";
-    } else {
-      controls.style.opacity = "1";
-      controls.style.pointerEvents = "auto";
-      randomPreview.style.opacity = "1";
-      randomPreview.style.pointerEvents = "auto";
-      updateSubtext();
-    }
-  });
-
-  // Inicializar opciones aleatorias al cargar
-  rerollOptions();
-</script>
-
+      <span class="repo-pill">airender</span>
+    </header>
+
+    <p class="summary">
+      Acceso rápido a las herramientas HTML de este proyecto. Todas son páginas estáticas y se pueden abrir directamente desde este índice.
+    </p>
+
+    <h2 class="section-title">Principales</h2>
+    <section class="app-grid" aria-label="Aplicaciones principales">
+      <a class="app-card orange" href="sculptor.html">
+        <span class="app-icon">3D</span>
+        <h2>Escultor Digital AI</h2>
+        <p>Generador de referencias para miniaturas de Warhammer: The Old World.</p>
+        <span class="app-path">sculptor.html</span>
+      </a>
+
+      <a class="app-card green" href="airsoft.html">
+        <span class="app-icon">AS</span>
+        <h2>Airsoft Wishlist</h2>
+        <p>Wishlist táctica con prioridades, presupuesto, imágenes, importación, exportación y vídeos de reviews.</p>
+        <span class="app-path">airsoft.html</span>
+      </a>
+
+      <a class="app-card blue" href="organizer/index.html">
+        <span class="app-icon">OR</span>
+        <h2>Army Organizer</h2>
+        <p>Organizador de listas para The Old World y Warhammer 40,000.</p>
+        <span class="app-path">organizer/index.html</span>
+      </a>
+
+      <a class="app-card violet" href="shirts/shirts.html">
+        <span class="app-icon">TS</span>
+        <h2>TeeGen AI</h2>
+        <p>Generador de ideas e ilustraciones para camisetas y diseños POD.</p>
+        <span class="app-path">shirts/shirts.html</span>
+      </a>
+    </section>
+
+    <h2 class="section-title">Variantes y accesos directos</h2>
+    <section class="app-grid" aria-label="Variantes y accesos directos">
+      <a class="app-card orange" href="index2.html">
+        <span class="app-icon">V2</span>
+        <h2>Escultor Digital AI V2</h2>
+        <p>Variante del generador de referencias para miniaturas.</p>
+        <span class="app-path">index2.html</span>
+      </a>
+
+      <a class="app-card blue" href="organizer/tow.html">
+        <span class="app-icon">OW</span>
+        <h2>The Old World Organizer</h2>
+        <p>Entrada directa al organizador de Warhammer: The Old World.</p>
+        <span class="app-path">organizer/tow.html</span>
+      </a>
+
+      <a class="app-card blue" href="organizer/40k.html">
+        <span class="app-icon">40K</span>
+        <h2>Warhammer 40,000 Organizer</h2>
+        <p>Entrada directa al organizador de Warhammer 40,000.</p>
+        <span class="app-path">organizer/40k.html</span>
+      </a>
+    </section>
+  </main>
 </body>
 </html>
