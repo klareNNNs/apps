@@ -28,6 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             padding: 20px;
+            overflow-x: hidden;
         }
 
         header {
@@ -119,11 +120,69 @@
             top: 20px;
         }
 
-        .form-panel h2 {
+        .panel-heading {
+            display: block;
             font-size: 1.2rem;
-            margin-bottom: 15px;
+            font-weight: bold;
             text-transform: uppercase;
             color: var(--accent-color);
+        }
+
+        .collapsible-toggle {
+            width: 100%;
+            appearance: none;
+            background-color: transparent;
+            border: 0;
+            color: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            text-align: left;
+        }
+
+        .collapsible-title {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .collapsible-subtitle {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: none;
+        }
+
+        .collapsible-icon {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--accent-color);
+            display: grid;
+            flex: 0 0 auto;
+            font-size: 1.3rem;
+            line-height: 1;
+            place-items: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .collapsible-panel.is-open .collapsible-icon {
+            border-color: var(--accent-color);
+            transform: rotate(45deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .collapsible-panel.is-open .collapsible-content {
+            display: block;
         }
 
         .form-group {
@@ -144,7 +203,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-color);
             border-radius: 4px;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
         .form-control:focus {
@@ -232,6 +291,10 @@
             margin-bottom: 20px;
         }
 
+        .toolbar .collapsible-content {
+            margin-top: 15px;
+        }
+
         .toolbar-row {
             display: grid;
             grid-template-columns: repeat(4, minmax(130px, 1fr));
@@ -254,6 +317,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.2s ease;
+            min-height: 42px;
         }
 
         .btn-compact:hover {
@@ -323,7 +387,7 @@
         /* Grid de Items */
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
             align-content: start;
         }
@@ -513,6 +577,7 @@
             font-size: 0.9rem;
             font-weight: bold;
             transition: all 0.2s ease;
+            min-height: 38px;
         }
 
         .btn-shop:hover {
@@ -537,6 +602,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 38px;
         }
 
         .btn-delete:hover {
@@ -553,6 +619,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 38px;
         }
 
         .btn-edit:hover {
@@ -569,6 +636,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 38px;
         }
 
         .btn-move:hover:not(:disabled) {
@@ -589,6 +657,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 38px;
         }
 
         .btn-duplicate:hover {
@@ -725,6 +794,7 @@
             text-align: center;
             text-decoration: none;
             transition: all 0.2s ease;
+            min-height: 40px;
         }
 
         .video-actions a:hover {
@@ -737,19 +807,194 @@
         }
 
         @media (max-width: 700px) {
+            body {
+                padding: 12px;
+            }
+
             header {
                 align-items: flex-start;
                 flex-direction: column;
-                gap: 12px;
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+
+            h1 {
+                font-size: 1.45rem;
+                line-height: 1.15;
+            }
+
+            .total-budget {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                font-size: 1rem;
             }
 
             .main-nav {
+                margin: -2px auto 16px auto;
                 overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .main-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab-button {
+                min-height: 44px;
+                padding: 10px 14px;
+                white-space: nowrap;
+            }
+
+            .container {
+                gap: 16px;
+            }
+
+            .form-panel {
+                padding: 16px;
+                position: static;
+            }
+
+            .panel-heading {
+                font-size: 1.05rem;
+            }
+
+            .collapsible-toggle {
+                min-height: 44px;
+            }
+
+            .image-actions {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            button.btn-block,
+            button.btn-secondary {
+                min-height: 44px;
+                font-size: 0.9rem;
+            }
+
+            .toolbar {
+                padding: 12px;
+                margin-bottom: 14px;
             }
 
             .videos-header {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .toolbar-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .btn-compact {
+                width: 100%;
+            }
+
+            .ranking-panel {
+                padding: 12px;
+                margin-bottom: 14px;
+            }
+
+            .ranking-item {
+                grid-template-columns: 22px minmax(0, 1fr) auto;
+                gap: 8px;
+            }
+
+            .items-grid,
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .item-card:hover {
+                transform: none;
+            }
+
+            .item-img-container {
+                height: auto;
+                aspect-ratio: 16 / 10;
+            }
+
+            .item-details {
+                padding: 13px;
+            }
+
+            .item-title {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+                line-height: 1.25;
+                word-break: break-word;
+            }
+
+            .item-actions {
+                display: grid;
+                grid-template-columns: 1fr repeat(5, 42px);
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .btn-shop,
+            .btn-move,
+            .btn-duplicate,
+            .btn-edit,
+            .btn-delete {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 42px;
+                padding: 8px;
+            }
+
+            .empty-state {
+                padding: 36px 14px;
+            }
+
+            .videos-panel {
+                gap: 18px;
+            }
+
+            .video-thumb {
+                min-height: 120px;
+            }
+
+            .video-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 10px;
+            }
+
+            .container,
+            .videos-panel,
+            header,
+            .main-nav {
+                width: 100%;
+            }
+
+            .item-actions {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .btn-shop {
+                grid-column: 1 / -1;
+            }
+
+            .item-category {
+                max-width: calc(100% - 58px);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     </style>
@@ -768,9 +1013,15 @@
 
 <div class="container tab-view active" id="wishlist-view">
     <!-- Panel de Añadir Item -->
-    <div class="form-panel">
-        <h2 id="form-title">Añadir Equipamiento</h2>
-        <form id="wishlist-form">
+    <div class="form-panel collapsible-panel" id="add-panel">
+        <button type="button" class="collapsible-toggle" id="add-panel-toggle" aria-expanded="false" aria-controls="wishlist-form">
+            <span class="collapsible-title">
+                <span class="panel-heading" id="form-title">Añadir Equipamiento</span>
+                <span class="collapsible-subtitle">Crear o editar artículos de la wishlist</span>
+            </span>
+            <span class="collapsible-icon" aria-hidden="true">+</span>
+        </button>
+        <form id="wishlist-form" class="collapsible-content">
             <div class="form-group">
                 <label for="item-name">Nombre del Artículo *</label>
                 <input type="text" id="item-name" class="form-control" placeholder="Ej: M4 CQB, Chaleco JPC..." required>
@@ -828,66 +1079,75 @@
     </div>
 
     <div class="list-panel">
-        <div class="toolbar">
-            <div class="toolbar-row">
-                <div class="form-group">
-                    <label for="filter-status">Estado</label>
-                    <select id="filter-status" class="form-control">
-                        <option value="all">Todos</option>
-                        <option value="pending">Pendientes</option>
-                        <option value="purchased">Comprados</option>
-                    </select>
-                </div>
+        <div class="toolbar collapsible-panel" id="filters-panel">
+            <button type="button" class="collapsible-toggle" id="filters-panel-toggle" aria-expanded="false" aria-controls="filters-panel-content">
+                <span class="collapsible-title">
+                    <span class="panel-heading">Filtros y orden</span>
+                    <span class="collapsible-subtitle">Filtrar, ordenar, importar y exportar</span>
+                </span>
+                <span class="collapsible-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="collapsible-content" id="filters-panel-content">
+                <div class="toolbar-row">
+                    <div class="form-group">
+                        <label for="filter-status">Estado</label>
+                        <select id="filter-status" class="form-control">
+                            <option value="all">Todos</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="purchased">Comprados</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="filter-category">Categoría</label>
-                    <select id="filter-category" class="form-control">
-                        <option value="all">Todas</option>
-                        <option value="réplica">Réplica / Arma</option>
-                        <option value="ropa">Ropa / Uniforme</option>
-                        <option value="chaleco">Chalecos / Pouches</option>
-                        <option value="accesorios">Accesorios / Ópticas</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="filter-category">Categoría</label>
+                        <select id="filter-category" class="form-control">
+                            <option value="all">Todas</option>
+                            <option value="réplica">Réplica / Arma</option>
+                            <option value="ropa">Ropa / Uniforme</option>
+                            <option value="chaleco">Chalecos / Pouches</option>
+                            <option value="accesorios">Accesorios / Ópticas</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="filter-priority">Prioridad</label>
-                    <select id="filter-priority" class="form-control">
-                        <option value="all">Todas</option>
-                        <option value="high">Alta</option>
-                        <option value="medium">Media</option>
-                        <option value="low">Baja</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="filter-priority">Prioridad</label>
+                        <select id="filter-priority" class="form-control">
+                            <option value="all">Todas</option>
+                            <option value="high">Alta</option>
+                            <option value="medium">Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="filter-min-price">Precio mín.</label>
-                    <input type="number" id="filter-min-price" class="form-control" step="0.01" placeholder="0.00">
-                </div>
+                    <div class="form-group">
+                        <label for="filter-min-price">Precio mín.</label>
+                        <input type="number" id="filter-min-price" class="form-control" step="0.01" placeholder="0.00">
+                    </div>
 
-                <div class="form-group">
-                    <label for="filter-max-price">Precio máx.</label>
-                    <input type="number" id="filter-max-price" class="form-control" step="0.01" placeholder="999.00">
-                </div>
+                    <div class="form-group">
+                        <label for="filter-max-price">Precio máx.</label>
+                        <input type="number" id="filter-max-price" class="form-control" step="0.01" placeholder="999.00">
+                    </div>
 
-                <div class="form-group">
-                    <label for="sort-mode">Orden</label>
-                    <select id="sort-mode" class="form-control">
-                        <option value="manual">Manual</option>
-                        <option value="priority">Prioridad</option>
-                        <option value="price-asc">Precio: menor a mayor</option>
-                        <option value="price-desc">Precio: mayor a menor</option>
-                        <option value="category">Categoría</option>
-                        <option value="status">Pendientes primero</option>
-                    </select>
+                    <div class="form-group">
+                        <label for="sort-mode">Orden</label>
+                        <select id="sort-mode" class="form-control">
+                            <option value="manual">Manual</option>
+                            <option value="priority">Prioridad</option>
+                            <option value="price-asc">Precio: menor a mayor</option>
+                            <option value="price-desc">Precio: mayor a menor</option>
+                            <option value="category">Categoría</option>
+                            <option value="status">Pendientes primero</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="toolbar-actions">
-                <button type="button" class="btn-compact" id="reset-filters-button">Limpiar filtros</button>
-                <button type="button" class="btn-compact" id="export-button">Exportar</button>
-                <button type="button" class="btn-compact" id="import-button">Importar</button>
-                <input type="file" id="import-file" accept="application/json,.json" hidden>
+                <div class="toolbar-actions">
+                    <button type="button" class="btn-compact" id="reset-filters-button">Limpiar filtros</button>
+                    <button type="button" class="btn-compact" id="export-button">Exportar</button>
+                    <button type="button" class="btn-compact" id="import-button">Importar</button>
+                    <input type="file" id="import-file" accept="application/json,.json" hidden>
+                </div>
             </div>
         </div>
 
@@ -1009,6 +1269,10 @@
     const videosView = document.getElementById('videos-view');
     const wishlistVideos = document.getElementById('wishlist-videos');
     const creatorVideos = document.getElementById('creator-videos');
+    const addPanel = document.getElementById('add-panel');
+    const addPanelToggle = document.getElementById('add-panel-toggle');
+    const filtersPanel = document.getElementById('filters-panel');
+    const filtersPanelToggle = document.getElementById('filters-panel-toggle');
 
     function normalizeWishlist(items) {
         return items.map((item) => ({
@@ -1122,6 +1386,15 @@
         }
     }
 
+    function setCollapsiblePanel(panel, toggle, isOpen) {
+        panel.classList.toggle('is-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function toggleCollapsiblePanel(panel, toggle) {
+        setCollapsiblePanel(panel, toggle, !panel.classList.contains('is-open'));
+    }
+
     function calculateTotal() {
         const total = wishlist
             .filter(item => !item.purchased)
@@ -1174,7 +1447,7 @@
             .sort((a, b) => {
                 const priorityDiff = priorityWeight[a.item.priority] - priorityWeight[b.item.priority];
                 if (priorityDiff !== 0) return priorityDiff;
-                return Number(a.item.price) - Number(b.item.price);
+                return a.index - b.index;
             })
             .slice(0, 5);
 
@@ -1416,9 +1689,13 @@
         button.addEventListener('click', () => setActiveTab(button.dataset.tab));
     });
 
+    addPanelToggle.addEventListener('click', () => toggleCollapsiblePanel(addPanel, addPanelToggle));
+    filtersPanelToggle.addEventListener('click', () => toggleCollapsiblePanel(filtersPanel, filtersPanelToggle));
+
     window.startEditItem = function(index) {
         const item = wishlist[index];
         editingIndex = index;
+        setCollapsiblePanel(addPanel, addPanelToggle, true);
         currentImageData = item.imgUrl && item.imgUrl.startsWith('data:image/') ? item.imgUrl : '';
         nameInput.value = item.name;
         categoryInput.value = item.category;
