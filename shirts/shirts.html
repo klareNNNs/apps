@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeeDesign AI - Generador Real</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #6366f1; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .mockup-canvas { background-color: #1e293b; background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 20px 20px; }
+  </style>
+</head>
+<body class="bg-[#0f172a] text-slate-200 min-h-screen">
+
+<div class="max-w-5xl mx-auto py-12 px-6">
+  <header class="mb-10 border-b border-slate-700 pb-6 text-center lg:text-left">
+    <h1 class="text-4xl font-extrabold text-white italic">TEE<span class="text-indigo-500">GEN</span> AI</h1>
+    <p class="text-slate-400 font-mono text-sm uppercase tracking-widest">Generación de Ilustraciones POD Gratis</p>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div class="space-y-6 bg-slate-800/80 p-8 rounded-2xl border border-slate-700 shadow-2xl">
+      <div>
+        <label class="block text-xs font-bold mb-2 text-indigo-400 uppercase">Estilo Maestro</label>
+        <select id="styleMaster" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 outline-none text-white focus:border-indigo-500">
+          <option value="minimalist">Minimalista (Líneas finas)</option>
+          <option value="vintage">Retro Vintage (Washed out)</option>
+          <option value="streetwear">Streetwear (Bold & Urban)</option>
+          <option value="vector">Vector Art (Solid Colors)</option>
+          <option value="samuraiAction">🔥 Samurai Action (Kanjis y Combate)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold mb-2 text-indigo-400 uppercase">Idea del Diseño</label>
+        <textarea id="userPrompt" rows="4" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-4 outline-none focus:border-indigo-500 transition-all" placeholder="Ej: Un gato cyberpunk con auriculares..."></textarea>
+      </div>
+
+      <div class="p-3 bg-black/50 rounded border border-slate-700">
+        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Prompt para la IA:</p>
+        <p id="debugPrompt" class="text-xs font-mono text-indigo-200/70"></p>
+      </div>
+
+      <button onclick="generarImagenReal()" id="btnMain" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all flex justify-center items-center gap-2">
+        <span>GENERAR ILUSTRACIÓN</span>
+      </button>
+    </div>
+
+    <div id="canvasArea" class="mockup-canvas relative flex flex-col items-center justify-center border-2 border-slate-700 rounded-2xl min-h-[450px]">
+
+      <div id="placeholder" class="text-slate-500 text-center p-10">
+        <p class="text-5xl mb-4">🎨</p>
+        <p class="font-medium italic text-sm">Tu arte aparecerá aquí listo para impresión</p>
+      </div>
+
+      <div id="loading" class="hidden flex flex-col items-center">
+        <div class="loader mb-4"></div>
+        <p class="text-indigo-400 font-mono text-xs animate-bounce uppercase">Procesando Pixeles...</p>
+      </div>
+
+      <div id="result" class="hidden w-full p-6 text-center">
+        <div class="relative inline-block group">
+          <img id="finalImg" class="max-w-full h-auto rounded-lg shadow-2xl border-4 border-white/10" src="" alt="Resultado">
+        </div>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <button onclick="descargarImagen()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg transition-transform active:scale-95">
+            ⬇️ DESCARGAR PNG
+          </button>
+        </div>
+        <p class="mt-4 text-[10px] text-slate-500 italic uppercase tracking-tighter italic text-sm">Nota: Esta API gratuita no incluye transparencia. Deberás quitar el fondo blanco en tu editor favorito.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PROMPT_MASTERS = {
+    minimalist: "minimalist vector art, fine lines, black and white, isolated on white background, high contrast, clean edges, sticker style.",
+    vintage: "retro vintage t-shirt design, distressed old school texture, washed colors, isolated on white background, 90s aesthetic.",
+    streetwear: "urban streetwear brand style, bold typography, cyberpunk aesthetics, sharp edges, isolated on white background, high detail.",
+    vector: "flat vector illustration, bold solid colors, no gradients, isolated on white background, thick black outlines.",
+    // AQUI ESTA EL NUEVO PROMPT MAESTRO para "Samurai Action"
+    samuraiAction: "Japanese street art style, action pose, dynamic composition, dramatic lighting, visible brush strokes, traditional Japanese kanji calligraphy as background element, bold red and black color scheme, isolated on white background, highly detailed, full body character."
+  };
+
+  const userTextArea = document.getElementById('userPrompt');
+  const styleSelect = document.getElementById('styleMaster');
+  const debugDisplay = document.getElementById('debugPrompt');
+
+  function updatePrompt() {
+    const userText = userTextArea.value || "...";
+    const styleKey = styleSelect.value;
+    debugDisplay.innerText = `${userText}, ${PROMPT_MASTERS[styleKey]}`;
+  }
+
+  userTextArea.addEventListener('input', updatePrompt);
+  styleSelect.addEventListener('change', updatePrompt);
+  updatePrompt();
+
+  function generarImagenReal() {
+    const promptFinal = debugDisplay.innerText;
+    if(userTextArea.value === "") return alert("Escribe una idea primero");
+
+    const btn = document.getElementById('btnMain');
+    btn.disabled = true;
+    btn.innerText = "CONECTANDO CON SERVIDOR...";
+
+    document.getElementById('placeholder').classList.add('hidden');
+    document.getElementById('result').classList.add('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+
+    // Cambiamos a un motor alternativo (vía lorenzofox o similar que use Stable Diffusion)
+    const seed = Math.floor(Math.random() * 999999);
+
+    // Usaremos un fallback: Si Pollinations falla, intentamos este formato:
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptFinal)}?width=1024&height=1024&nologo=true&seed=${seed}&model=flux`;
+
+    const img = document.getElementById('finalImg');
+
+    // Manejo de errores por si el servidor sigue caído
+    img.onerror = function() {
+      alert("El servidor de imágenes gratuito está saturado (Error 530). Intenta de nuevo en unos segundos o cambia el prompt.");
+      btn.disabled = false;
+      btn.innerText = "REINTENTAR";
+      document.getElementById('loading').classList.add('hidden');
+    };
+
+    img.src = url;
+
+    img.onload = () => {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('result').classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerText = "GENERAR ILUSTRACIÓN";
+    };
+  }
+
+  function descargarImagen() {
+    const img = document.getElementById('finalImg');
+    const link = document.createElement('a');
+    link.href = img.src;
+    link.download = "mi_diseno_camiseta.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+</script>
+</body>
+</html>

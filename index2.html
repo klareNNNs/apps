@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Print Sculpt Render - Warhammer Miniatures</title>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script>tailwind.config = { corePlugins: { preflight: true } }</script>
+    <style>
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border:1px solid rgba(255,255,255,0.1); }
+        .loader { border:4px solid rgba(255,255,255,0.1); border-top:4px solid #f97316; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; }
+        @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        .toggle-checkbox:checked { right: 0; border-color: #f97316; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #f97316; }
+
+        .btn-active {
+            border-color: #f97316 !important;
+            background-color: rgba(249, 115, 22, 0.2) !important;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+        }
+        .radio-option { cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .radio-option:hover { background: rgba(255,255,255,0.05); }
+        .radio-option.selected {
+            background: rgba(249,115,22,0.2) !important;
+            border-color: #f97316 !important;
+        }
+        .stat-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; }
+    </style>
+</head>
+
+<body class="bg-[#0f0f12] text-white min-h-screen flex flex-col items-center p-4 md:p-12">
+
+<header class="text-center mb-8">
+    <div class="inline-block px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs mb-4 uppercase tracking-widest">
+        Warhammer: The Old World Reference
+    </div>
+    <h1 class="text-5xl font-extrabold bg-gradient-to-b from-white to-slate-500 bg-clip-text text-transparent">
+        Escultor Digital AI
+    </h1>
+</header>
+
+<main class="w-full max-w-6xl glass rounded-[2rem] p-8 shadow-2xl">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+        <!-- PANEL DE CONTROL IZQUIERDO -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+
+            <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+                <div>
+                    <span class="block text-sm font-bold uppercase text-orange-400">Modo Libre</span>
+                    <span class="text-[10px] text-slate-500 italic">Ignora lógica de componentes</span>
+                </div>
+                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="modeToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none transition-all duration-300"/>
+                    <label for="modeToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer"></label>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Concepto Base</label>
+                <textarea id="promptInput"
+                          class="w-full h-24 bg-black/40 border border-white/10 rounded-2xl p-4 resize-none text-slate-200 focus:ring-2 focus:ring-orange-500/50 outline-none"
+                          placeholder="Ej: Marauder of chaos with fur cloak..."></textarea>
+            </div>
+
+            <div id="logicControls" class="flex flex-col gap-4">
+                <div>
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">Peana (Geometría)</span>
+                    <div class="grid grid-cols-3 gap-2 mt-1">
+                        <button id="btnInfLigera" onclick="setUnitType('infanteriaLigera')" class="bg-white/5 py-2 rounded-xl text-[10px] border border-white/5 btn-active">25mm Cuad.</button>
+                        <button id="btnInfPesada" onclick="setUnitType('infanteriaPesada')" class="bg-white/5 py-2 rounded-xl text-[10px] border border-white/5">30mm Cuad.</button>
+                        <button id="btnCabPesada" onclick="setUnitType('caballeriaPesada')" class="bg-white/5 py-2 rounded-xl text-[10px] border border-white/5">30x60mm Rec.</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Filtro Cabeza</span>
+                        <div class="grid grid-cols-1 gap-2 mt-1">
+                            <div id="headDescubierta" onclick="setHeadOption('descubierta')" class="radio-option selected p-2 rounded-xl text-center text-[10px]">Sin Casco</div>
+                            <div id="headCasco" onclick="setHeadOption('casco')" class="radio-option p-2 rounded-xl text-center text-[10px]">Con Casco</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Filtro Armas</span>
+                        <div class="grid grid-cols-1 gap-2 mt-1">
+                            <div id="weaponArmaManoEscudo" onclick="setWeaponOption('armaManoEscudo')" class="radio-option selected p-2 rounded-xl text-center text-[10px]">1 Mano + Escudo</div>
+                            <div id="weaponDosManos" onclick="setWeaponOption('dosManos')" class="radio-option p-2 rounded-xl text-center text-[10px]">2 Manos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE PRE-VISUALIZACIÓN DE OPCIONES -->
+            <div class="p-4 bg-orange-500/5 border border-orange-500/20 rounded-2xl">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold uppercase text-orange-400">Ficha de Escultura</span>
+                    <button onclick="prepareSculpt()" class="text-[10px] bg-orange-500/20 hover:bg-orange-500/40 px-3 py-1 rounded-full border border-orange-500/30 transition-all">
+                        🎲 Barajar Opciones
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 gap-2 text-[10px] font-mono text-slate-300">
+                    <div class="stat-box"><span class="text-orange-500/70">CAB.:</span> <span id="displayHead">---</span></div>
+                    <div class="stat-box"><span class="text-orange-500/70">ARMA:</span> <span id="displayWeapon">---</span></div>
+                    <div class="stat-box"><span class="text-orange-500/70">MONTURA:</span> <span id="displayMount">---</span></div>
+                    <div class="stat-box"><span class="text-orange-500/70">POSE:</span> <span id="displayPose">---</span></div>
+                </div>
+            </div>
+
+            <button id="generateBtn" disabled class="bg-slate-800 text-slate-500 py-4 rounded-2xl font-bold transition-all cursor-not-allowed opacity-50">
+                1. Prepara la Escultura primero
+            </button>
+        </div>
+
+        <!-- PANEL DE RESULTADO DERECHO -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="relative aspect-square bg-black/60 rounded-2xl border border-white/10 flex items-center justify-center overflow-hidden">
+                <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-20">
+                    <div class="loader mb-4"></div>
+                    <p id="loadingStatus" class="text-orange-400 uppercase tracking-widest animate-pulse">Renderizando Resina...</p>
+                </div>
+                <img id="previewImg" class="hidden w-full h-full object-contain p-4 shadow-inner" alt="Miniatura generada">
+
+                <div id="errorMessage" class="hidden absolute inset-0 bg-red-900/20 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center z-30">
+                    <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <p class="font-bold text-red-200">Error en la Generación</p>
+                    <p id="errorDetail" class="text-xs text-red-300/70 mt-2">Hubo un problema al conectar con el servidor de imagen.</p>
+                    <button onclick="document.getElementById('errorMessage').classList.add('hidden')" class="mt-4 px-4 py-2 bg-red-600 rounded-lg text-xs font-bold uppercase">Cerrar</button>
+                </div>
+
+                <div id="placeholderText" class="text-slate-600 text-center px-10">
+                    <svg class="w-16 h-16 mx-auto mb-4 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.86L12 5.84zM5.5 13L2 19h20l-3.5-6h-13zm3.46 4l1.15-2h3.78l1.15 2H8.96z"/></svg>
+                    <p class="uppercase tracking-tighter font-bold text-xl">Visor de Escultura 3D</p>
+                    <p class="text-xs mt-2 opacity-50">Configura y prepara el prompt para empezar</p>
+                </div>
+            </div>
+
+            <div id="promptDisplay" class="p-4 bg-black/40 rounded-xl border border-white/10">
+                <span class="text-[10px] font-bold text-orange-500/50 uppercase block mb-1">Prompt Final que leerá la IA:</span>
+                <p id="promptText" class="text-[10px] text-slate-500 italic leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const apiKey = "";
+    let currentUnitType = "infanteriaLigera";
+    let currentHeadOption = "descubierta";
+    let currentWeaponOption = "armaManoEscudo";
+
+    let selection = { head: "", weapon: "", pose: "", base: "", mount: "" };
+
+    const HEAD_OPTIONS = {
+        descubierta: [
+            "bald head with heavy ritual scarring",
+            "long wild windswept hair and a thick beard",
+            "tightly braided hair with small bone beads",
+            "shaved sides with a long top-knot ponytail",
+            "thick bushy beard with iron rings",
+            "mohawk style with spiked hair",
+            "face covered in ritual war-paint"
+        ],
+        casco: [
+            "war mask with gigantic curved ram horns",
+            "ritual head idol with crown spikes",
+            "sealed war mask with huge bull horns",
+            "brutal spiked headpiece with thick metal spikes"
+        ]
+    };
+
+    const WEAPON_OPTIONS = {
+        armaManoEscudo: {
+            armas: ["broad brutal rune-sword", "massive battle axe", "heavy iron mace", "giant war hammer"],
+            escudos: ["round chaos shield", "tower shield with chaos star", "oval shield with carvings"]
+        },
+        dosManos: ["huge double-headed battle axe", "giant war hammer", "massive iron pike"]
+    };
+
+    const DYNAMIC_POSES = [
+        "powerful heroic attack pose", "heavy defensive guard stance", "marching forward aggressively",
+        "roaring a battle cry with weapon overhead", "mid-parry deflecting a blow"
+    ];
+
+    const MOUNT_OPTIONS = [
+        {
+            type: "Chaos Warhorse",
+            desc: "mounted on a massive Chaos Warhorse covered in heavy spiked plate armor, iron chains, and demonic icons",
+            style: "Chaos Plate Armor"
+        },
+        {
+            type: "Barbarian Steed",
+            desc: "mounted on a wild, feral, unarmored tribal barbarian horse with stocky powerful build, short rough coat, thick messy mane and tail, without any ornaments, no braids, no metal bits, just a simple primitive leather rope bridle, exhibiting primitive wild features",
+            style: "Wild Tribal Steed"
+        }
+    ];
+
+    const BASE_GEOMETRY = {
+        infanteriaLigera: "SQUARE 25mm stone base, perfectly straight 90-degree corners",
+        infanteriaPesada: "SQUARE 30mm stone base, perfectly straight 90-degree corners",
+        caballeriaPesada: "RECTANGULAR 30x60mm stone base, perfectly straight 90-degree corners"
+    };
+
+    const CAVALRY_CHARGE_POSE = "The horse is charging forward at full speed, captured mid-stride. Two or three legs are lifted dynamically, while at least one rear leg remains firmly planted on the ground. The body is angled forward with strong momentum, conveying weight, power, and forward motion. This is a heavy cavalry run, not a jump and not rearing. The pose feels grounded, brutal, and realistic for a massive horse.";
+
+    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function setUnitType(t){
+        currentUnitType = t;
+        ['btnInfLigera', 'btnInfPesada', 'btnCabPesada'].forEach(id => document.getElementById(id).classList.remove('btn-active'));
+        document.getElementById(t === 'infanteriaLigera' ? 'btnInfLigera' : t === 'infanteriaPesada' ? 'btnInfPesada' : 'btnCabPesada').classList.add('btn-active');
+        resetPreparation();
+    }
+
+    function setHeadOption(o){
+        currentHeadOption = o;
+        document.getElementById('headDescubierta').classList.toggle('selected', o === 'descubierta');
+        document.getElementById('headCasco').classList.toggle('selected', o === 'casco');
+        resetPreparation();
+    }
+
+    function setWeaponOption(w){
+        currentWeaponOption = w;
+        document.getElementById('weaponArmaManoEscudo').classList.toggle('selected', w === 'armaManoEscudo');
+        document.getElementById('weaponDosManos').classList.toggle('selected', w === 'dosManos');
+        resetPreparation();
+    }
+
+    function resetPreparation() {
+        const genBtn = document.getElementById("generateBtn");
+        genBtn.disabled = true;
+        genBtn.innerText = "1. Prepara la Escultura primero";
+        genBtn.className = "bg-slate-800 text-slate-500 py-4 rounded-2xl font-bold transition-all cursor-not-allowed opacity-50";
+        document.getElementById('promptText').innerText = "Cambios detectados. Por favor, baraja de nuevo.";
+    }
+
+    function prepareSculpt() {
+        const userText = document.getElementById("promptInput").value || "Warrior of Chaos";
+
+        selection.head = rand(HEAD_OPTIONS[currentHeadOption]);
+        selection.base = BASE_GEOMETRY[currentUnitType];
+
+        // Lógica de Montura y Pose Crítica
+        if(currentUnitType === 'caballeriaPesada') {
+            const mountObj = rand(MOUNT_OPTIONS);
+            selection.mount = mountObj.desc;
+            selection.mountType = mountObj.type;
+            // REGLA CRÍTICA: Forzar pose de carga para caballos
+            selection.pose = CAVALRY_CHARGE_POSE;
+        } else {
+            selection.mount = "standing on foot";
+            selection.mountType = "None (On Foot)";
+            selection.pose = rand(DYNAMIC_POSES);
+        }
+
+        // Lógica de Armas (Forzar Lanza en Caballería con Escudo)
+        if(currentWeaponOption === 'dosManos'){
+            selection.weapon = `gripping a ${rand(WEAPON_OPTIONS.dosManos)} with both hands`;
+        } else {
+            let armaFinal;
+            if (currentUnitType === 'caballeriaPesada') {
+                armaFinal = "massive and heavy primitive cavalry lance with iron reinforcements";
+            } else {
+                armaFinal = rand(WEAPON_OPTIONS.armaManoEscudo.armas);
+            }
+            selection.weapon = `armed with a ${armaFinal} and a ${rand(WEAPON_OPTIONS.armaManoEscudo.escudos)}`;
+        }
+
+        document.getElementById("displayHead").innerText = selection.head;
+        document.getElementById("displayWeapon").innerText = selection.weapon;
+        document.getElementById("displayPose").innerText = currentUnitType === 'caballeriaPesada' ? "Carga Pesada (Full Speed)" : selection.pose;
+        document.getElementById("displayMount").innerText = selection.mountType;
+
+        const finalPrompt = `Professional 3D render of a Warhammer Old World style tabletop miniature. Subject: ${userText}, ${selection.mount}. Pose (CRITICAL): ${selection.pose}. Rider Details: Head: ${selection.head}, Equipment: ${selection.weapon}. Armor Style: Brutal Chaos plate and heavy fur pelts. BASE: Glued to a ${selection.base}, 90-degree corners. Style: Grey resin, ZBrush sculpt, sharp details, studio lighting.`;
+
+        document.getElementById("promptText").innerText = finalPrompt;
+
+        const genBtn = document.getElementById("generateBtn");
+        genBtn.disabled = false;
+        genBtn.innerText = "Generar esta Escultura";
+        genBtn.className = "mt-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-orange-900/20 text-white";
+    }
+
+    async function generateImageWithRetry(prompt, retries = 5, delay = 1000) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+        const neg = "ROUND BASE, CIRCULAR, OVAL, cylinder base, curved edges, low quality, distorted, plastic look, blurry, colorful, painting, drawing, horse armor, metal armor on horse, braided horse hair, groomed horse, decorative ornaments, horse jumping, horse rearing, flying horse";
+
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        instances: [{ prompt: prompt + " | Negative: " + neg }],
+                        parameters: { sampleCount: 1 }
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const res = await response.json();
+                if (res.predictions && res.predictions[0]) return res.predictions[0].bytesBase64Encoded;
+
+            } catch (err) {
+                if (i === retries - 1) throw err;
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+        }
+    }
+
+    async function handleGeneration(){
+        const finalPrompt = document.getElementById("promptText").innerText;
+        const loading = document.getElementById("loadingOverlay");
+        const generateBtn = document.getElementById("generateBtn");
+        const errorBox = document.getElementById("errorMessage");
+
+        errorBox.classList.add("hidden");
+        loading.classList.remove("hidden");
+        generateBtn.disabled = true;
+        generateBtn.innerText = "Generando...";
+
+        try {
+            const base64Data = await generateImageWithRetry(finalPrompt);
+            document.getElementById("previewImg").src = `data:image/png;base64,${base64Data}`;
+            document.getElementById("previewImg").classList.remove("hidden");
+            document.getElementById("placeholderText").classList.add("hidden");
+        } catch (e) {
+            document.getElementById("errorDetail").innerText = e.message || "Error desconocido en el servidor de imágenes.";
+            errorBox.classList.remove("hidden");
+        } finally {
+            loading.classList.add("hidden");
+            generateBtn.disabled = false;
+            generateBtn.innerText = "Generar esta Escultura";
+        }
+    }
+
+    document.getElementById("generateBtn").onclick = handleGeneration;
+
+    document.getElementById('modeToggle').addEventListener('change', function() {
+        const controls = document.getElementById('logicControls');
+        if(this.checked) {
+            controls.style.opacity = "0.3";
+            controls.style.pointerEvents = "none";
+            document.getElementById("generateBtn").disabled = false;
+            document.getElementById("generateBtn").innerText = "Generar (Modo Libre)";
+            document.getElementById("generateBtn").className = "mt-4 bg-blue-600 py-4 rounded-2xl font-bold text-white";
+            document.getElementById('promptText').innerText = document.getElementById("promptInput").value || "Generando concepto libre...";
+        } else {
+            controls.style.opacity = "1";
+            controls.style.pointerEvents = "auto";
+            resetPreparation();
+        }
+    });
+</script>
+</body>
+</html>

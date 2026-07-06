@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airsoft Loadout Wishlist</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-color: #1e1e1e;
+            --accent-color: #7a9a60; /* Verde oliva táctico */
+            --accent-hover: #5c7547;
+            --text-color: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: #333333;
+            --danger-color: #cf6679;
+            --purchased-color: #2d3725; /* Fondo oscuro verdoso para lo comprado */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .total-budget {
+            font-size: 1.1rem;
+            background: var(--panel-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .total-budget span {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .main-nav {
+            max-width: 1200px;
+            margin: -10px auto 24px auto;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            appearance: none;
+            background-color: transparent;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: bold;
+            padding: 12px 16px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover,
+        .tab-button.active {
+            color: var(--text-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tab-view {
+            display: none;
+        }
+
+        .tab-view.active {
+            display: grid;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Formulario */
+        .form-panel {
+            background-color: var(--panel-color);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .form-panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button.btn-block {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button.btn-block:hover {
+            background-color: var(--accent-hover);
+            color: #fff;
+        }
+
+        button.btn-secondary {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button.btn-secondary:hover {
+            color: var(--text-color);
+            border-color: var(--accent-color);
+        }
+
+        button.is-hidden {
+            display: none;
+        }
+
+        .image-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            display: none;
+            width: 100%;
+            height: 120px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            object-fit: cover;
+            background-color: var(--bg-color);
+        }
+
+        .image-preview.has-image {
+            display: block;
+        }
+
+        textarea.form-control {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .list-panel {
+            min-width: 0;
+        }
+
+        .toolbar {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-compact {
+            padding: 10px 12px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-compact:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 700px) {
+            .toolbar-row {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        .ranking-panel {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ranking-panel h2 {
+            color: var(--accent-color);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .ranking-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 26px 1fr auto;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ranking-item:first-child {
+            border-top: 0;
+        }
+
+        .ranking-number {
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
+        .ranking-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ranking-price {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Grid de Items */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .item-card {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        /* Estado comprado */
+        .item-card.purchased {
+            background-color: var(--purchased-color);
+            border-color: #445533;
+            opacity: 0.75;
+        }
+
+        .item-card.purchased .item-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .item-card.purchased .item-price {
+            color: var(--text-muted);
+        }
+
+        .item-card.purchased .item-img-container {
+            filter: grayscale(50%);
+        }
+
+        .item-img-container {
+            width: 100%;
+            height: 180px;
+            background-color: #2a2a2a;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-img-placeholder {
+            color: var(--text-muted);
+            font-size: 3rem;
+        }
+
+        .item-category {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0,0,0,0.75);
+            color: var(--accent-color);
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 3px;
+            text-transform: uppercase;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* Botón de Check (Comprado) en la esquina superior derecha de la tarjeta */
+        .btn-check-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .btn-check-status:hover {
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .item-card.purchased .btn-check-status {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .item-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+
+        .item-price {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .item-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .priority-badge {
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 3px 7px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            color: #f1b36d;
+            border-color: #8a5a26;
+        }
+
+        .priority-medium {
+            color: #d6d6d6;
+            border-color: #666666;
+        }
+
+        .priority-low {
+            color: #84a7c2;
+            border-color: #3e617b;
+        }
+
+        .item-notes {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.35;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .item-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-shop {
+            flex-grow: 1;
+            padding: 8px;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-shop:hover {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        .item-card.purchased .btn-shop {
+            border-color: var(--border-color);
+            color: var(--text-muted);
+        }
+        .item-card.purchased .btn-shop:hover {
+            background-color: transparent;
+            color: var(--text-muted);
+        }
+
+        .btn-delete {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--danger-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: #fff;
+            border-color: var(--danger-color);
+        }
+
+        .btn-edit {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .btn-move {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-move:hover:not(:disabled) {
+            color: var(--text-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-move:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-duplicate {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-duplicate:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .videos-panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .videos-section {
+            min-width: 0;
+        }
+
+        .videos-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 16px;
+        }
+
+        .videos-header h2 {
+            color: var(--accent-color);
+            font-size: 1.15rem;
+            text-transform: uppercase;
+        }
+
+        .videos-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-width: 680px;
+            margin-top: 6px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .video-card {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .video-thumb {
+            min-height: 145px;
+            background:
+                linear-gradient(135deg, rgba(122, 154, 96, 0.22), rgba(132, 167, 194, 0.14)),
+                #242424;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .video-play {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.72);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            line-height: 1;
+            padding-left: 4px;
+        }
+
+        .video-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .video-kicker {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        .video-meta {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        .video-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .video-actions a {
+            flex: 1;
+            padding: 9px 10px;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .video-actions a:hover {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        .tab-view:not(.active) {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .main-nav {
+                overflow-x: auto;
+            }
+
+            .videos-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Tactical Wishlist</h1>
+    <div class="total-budget">Por Comprar: <span id="total-price">0.00€</span></div>
+</header>
+
+<nav class="main-nav" aria-label="Secciones de airsoft">
+    <button type="button" class="tab-button active" data-tab="wishlist">Wishlist</button>
+    <button type="button" class="tab-button" data-tab="videos">Vídeos</button>
+</nav>
+
+<div class="container tab-view active" id="wishlist-view">
+    <!-- Panel de Añadir Item -->
+    <div class="form-panel">
+        <h2 id="form-title">Añadir Equipamiento</h2>
+        <form id="wishlist-form">
+            <div class="form-group">
+                <label for="item-name">Nombre del Artículo *</label>
+                <input type="text" id="item-name" class="form-control" placeholder="Ej: M4 CQB, Chaleco JPC..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="item-category">Categoría</label>
+                <select id="item-category" class="form-control">
+                    <option value="réplica">Réplica / Arma</option>
+                    <option value="ropa">Ropa / Uniforme</option>
+                    <option value="chaleco">Chalecos / Pouches</option>
+                    <option value="accesorios">Accesorios / Ópticas</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="item-price">Precio (€) *</label>
+                <input type="number" id="item-price" class="form-control" step="0.01" placeholder="0.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="item-priority">Prioridad</label>
+                <select id="item-priority" class="form-control">
+                    <option value="high">Alta</option>
+                    <option value="medium" selected>Media</option>
+                    <option value="low">Baja</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="item-link">Enlace de la Tienda</label>
+                <input type="url" id="item-link" class="form-control" placeholder="https://tienda.com/producto">
+            </div>
+
+            <div class="form-group">
+                <label for="item-img-url">Enlace de la Imagen</label>
+                <input type="url" id="item-img-url" class="form-control" placeholder="https://tienda.com/imagen.jpg">
+                <div class="image-actions">
+                    <button type="button" class="btn-secondary" id="upload-image-button">Subir imagen</button>
+                    <button type="button" class="btn-secondary" id="clear-image-button">Quitar imagen</button>
+                </div>
+                <input type="file" id="item-img-file" accept="image/*" hidden>
+                <img id="image-preview" class="image-preview" alt="Vista previa de imagen">
+            </div>
+
+            <div class="form-group">
+                <label for="item-notes">Notas</label>
+                <textarea id="item-notes" class="form-control" placeholder="Talla, color, compatibilidad, esperar rebajas..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-block" id="submit-button">Añadir a la Lista</button>
+            <button type="button" class="btn-secondary is-hidden" id="cancel-edit-button">Cancelar edición</button>
+        </form>
+    </div>
+
+    <div class="list-panel">
+        <div class="toolbar">
+            <div class="toolbar-row">
+                <div class="form-group">
+                    <label for="filter-status">Estado</label>
+                    <select id="filter-status" class="form-control">
+                        <option value="all">Todos</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="purchased">Comprados</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-category">Categoría</label>
+                    <select id="filter-category" class="form-control">
+                        <option value="all">Todas</option>
+                        <option value="réplica">Réplica / Arma</option>
+                        <option value="ropa">Ropa / Uniforme</option>
+                        <option value="chaleco">Chalecos / Pouches</option>
+                        <option value="accesorios">Accesorios / Ópticas</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-priority">Prioridad</label>
+                    <select id="filter-priority" class="form-control">
+                        <option value="all">Todas</option>
+                        <option value="high">Alta</option>
+                        <option value="medium">Media</option>
+                        <option value="low">Baja</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-min-price">Precio mín.</label>
+                    <input type="number" id="filter-min-price" class="form-control" step="0.01" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-max-price">Precio máx.</label>
+                    <input type="number" id="filter-max-price" class="form-control" step="0.01" placeholder="999.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="sort-mode">Orden</label>
+                    <select id="sort-mode" class="form-control">
+                        <option value="manual">Manual</option>
+                        <option value="priority">Prioridad</option>
+                        <option value="price-asc">Precio: menor a mayor</option>
+                        <option value="price-desc">Precio: mayor a menor</option>
+                        <option value="category">Categoría</option>
+                        <option value="status">Pendientes primero</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar-actions">
+                <button type="button" class="btn-compact" id="reset-filters-button">Limpiar filtros</button>
+                <button type="button" class="btn-compact" id="export-button">Exportar</button>
+                <button type="button" class="btn-compact" id="import-button">Importar</button>
+                <input type="file" id="import-file" accept="application/json,.json" hidden>
+            </div>
+        </div>
+
+        <div class="ranking-panel" id="ranking-panel">
+            <h2>Próximas compras</h2>
+            <div class="ranking-list" id="ranking-list"></div>
+        </div>
+
+        <!-- Grid de la Lista de Deseos -->
+        <div class="items-grid" id="items-container">
+            <!-- Los items se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+</div>
+
+<div class="videos-panel tab-view" id="videos-view">
+    <section class="videos-section">
+        <div class="videos-header">
+            <div>
+                <h2>Reviews para tu wishlist</h2>
+                <p>Busca reviews en YouTube cruzando tus artículos pendientes con canales españoles de airsoft.</p>
+            </div>
+        </div>
+        <div class="video-grid" id="wishlist-videos"></div>
+    </section>
+
+    <section class="videos-section">
+        <div class="videos-header">
+            <div>
+                <h2>Canales españoles de airsoft</h2>
+                <p>Accesos rápidos a búsquedas de reviews, tests y comparativas de creadores y medios españoles.</p>
+            </div>
+        </div>
+        <div class="video-grid" id="creator-videos"></div>
+    </section>
+</div>
+
+<script>
+    const STORAGE_KEY = 'airsoft_wishlist';
+    const featuredCreators = [
+        {
+            name: "0'20 Magazine",
+            focus: "Reviews, novedades, partidas y cobertura de tiendas y marcas.",
+            query: "0'20 Magazine airsoft review español"
+        },
+        {
+            name: "Airsoft Review en Español",
+            focus: "Pruebas de réplicas, accesorios y configuración de equipamiento.",
+            query: "Airsoft Review en Español réplica review"
+        },
+        {
+            name: "Airsoft Gandía",
+            focus: "Reviews de tienda, comparativas y material para jugadores nuevos.",
+            query: "Airsoft Gandía review airsoft"
+        },
+        {
+            name: "Airsoft Total",
+            focus: "Reviews y guías de réplicas, mantenimiento y accesorios.",
+            query: "Airsoft Total review réplica airsoft"
+        },
+        {
+            name: "Búfalo Airsoft",
+            focus: "Contenido de campo, equipamiento y recomendaciones prácticas.",
+            query: "Búfalo Airsoft review equipamiento"
+        },
+        {
+            name: "Airsoft España",
+            focus: "Búsqueda general para encontrar reviews recientes en castellano.",
+            query: "airsoft España review réplica accesorios"
+        }
+    ];
+    const priorityLabels = {
+        high: 'Alta',
+        medium: 'Media',
+        low: 'Baja'
+    };
+    const priorityWeight = {
+        high: 0,
+        medium: 1,
+        low: 2
+    };
+    const fallbackImage = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='18' height='18' rx='2' ry='2'/><circle cx='8.5' cy='8.5' r='1.5'/><polyline points='21 15 16 10 5 21'/></svg>";
+
+    let wishlist = normalizeWishlist(JSON.parse(localStorage.getItem(STORAGE_KEY)) || []);
+    let editingIndex = null;
+    let currentImageData = '';
+
+    const form = document.getElementById('wishlist-form');
+    const itemsContainer = document.getElementById('items-container');
+    const totalPriceEl = document.getElementById('total-price');
+    const formTitle = document.getElementById('form-title');
+    const submitButton = document.getElementById('submit-button');
+    const cancelEditButton = document.getElementById('cancel-edit-button');
+    const nameInput = document.getElementById('item-name');
+    const categoryInput = document.getElementById('item-category');
+    const priceInput = document.getElementById('item-price');
+    const priorityInput = document.getElementById('item-priority');
+    const linkInput = document.getElementById('item-link');
+    const imgUrlInput = document.getElementById('item-img-url');
+    const imgFileInput = document.getElementById('item-img-file');
+    const uploadImageButton = document.getElementById('upload-image-button');
+    const clearImageButton = document.getElementById('clear-image-button');
+    const imagePreview = document.getElementById('image-preview');
+    const notesInput = document.getElementById('item-notes');
+    const filterStatusInput = document.getElementById('filter-status');
+    const filterCategoryInput = document.getElementById('filter-category');
+    const filterPriorityInput = document.getElementById('filter-priority');
+    const filterMinPriceInput = document.getElementById('filter-min-price');
+    const filterMaxPriceInput = document.getElementById('filter-max-price');
+    const sortModeInput = document.getElementById('sort-mode');
+    const resetFiltersButton = document.getElementById('reset-filters-button');
+    const exportButton = document.getElementById('export-button');
+    const importButton = document.getElementById('import-button');
+    const importFileInput = document.getElementById('import-file');
+    const rankingPanel = document.getElementById('ranking-panel');
+    const rankingList = document.getElementById('ranking-list');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const wishlistView = document.getElementById('wishlist-view');
+    const videosView = document.getElementById('videos-view');
+    const wishlistVideos = document.getElementById('wishlist-videos');
+    const creatorVideos = document.getElementById('creator-videos');
+
+    function normalizeWishlist(items) {
+        return items.map((item) => ({
+            name: item.name || '',
+            category: item.category || 'otros',
+            price: Number(item.price) || 0,
+            link: item.link || '',
+            imgUrl: item.imgUrl || '',
+            purchased: Boolean(item.purchased),
+            priority: item.priority || 'medium',
+            notes: item.notes || ''
+        }));
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(value) {
+        return escapeHtml(value);
+    }
+
+    function updateApp() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(wishlist));
+        renderRanking();
+        renderItems();
+        renderVideos();
+        calculateTotal();
+    }
+
+    function getYoutubeSearchUrl(query) {
+        return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+    }
+
+    function createVideoCard({ kicker, title, meta, query, secondaryQuery }) {
+        const safeKicker = escapeHtml(kicker);
+        const safeTitle = escapeHtml(title);
+        const safeMeta = escapeHtml(meta);
+        const safeQuery = escapeAttr(getYoutubeSearchUrl(query));
+        const safeSecondaryQuery = escapeAttr(getYoutubeSearchUrl(secondaryQuery || query));
+
+        return `
+            <article class="video-card">
+                <div class="video-thumb" aria-hidden="true">
+                    <span class="video-play">▶</span>
+                </div>
+                <div class="video-details">
+                    <div class="video-kicker">${safeKicker}</div>
+                    <h3 class="video-title">${safeTitle}</h3>
+                    <p class="video-meta">${safeMeta}</p>
+                    <div class="video-actions">
+                        <a href="${safeQuery}" target="_blank" rel="noopener noreferrer">Ver vídeos</a>
+                        <a href="${safeSecondaryQuery}" target="_blank" rel="noopener noreferrer">Más reviews</a>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    function renderVideos() {
+        const pendingItems = wishlist
+            .filter(item => !item.purchased)
+            .slice(0, 8);
+
+        if (pendingItems.length === 0) {
+            wishlistVideos.innerHTML = createVideoCard({
+                kicker: 'Wishlist vacía',
+                title: 'Reviews de réplicas y equipamiento en español',
+                meta: 'Añade productos a la wishlist y esta sección generará búsquedas específicas por artículo.',
+                query: 'airsoft review español réplica equipamiento',
+                secondaryQuery: 'mejores réplicas airsoft español review'
+            });
+        } else {
+            wishlistVideos.innerHTML = pendingItems.map((item) => {
+                const productQuery = `${item.name} airsoft review español`;
+                const categoryQuery = `${item.category} airsoft review español ${item.name}`;
+
+                return createVideoCard({
+                    kicker: priorityLabels[item.priority] ? `Prioridad ${priorityLabels[item.priority]}` : 'Review',
+                    title: `Reviews de ${item.name}`,
+                    meta: `${item.category} · Busca pruebas, cronos, compatibilidad y opiniones antes de comprar.`,
+                    query: productQuery,
+                    secondaryQuery: categoryQuery
+                });
+            }).join('');
+        }
+
+        creatorVideos.innerHTML = featuredCreators.map((creator) => createVideoCard({
+            kicker: 'Canal / creador',
+            title: creator.name,
+            meta: creator.focus,
+            query: creator.query,
+            secondaryQuery: `${creator.name} airsoft review wishlist`
+        })).join('');
+    }
+
+    function setActiveTab(tabName) {
+        tabButtons.forEach((button) => {
+            button.classList.toggle('active', button.dataset.tab === tabName);
+        });
+        wishlistView.classList.toggle('active', tabName === 'wishlist');
+        videosView.classList.toggle('active', tabName === 'videos');
+
+        if (tabName === 'videos') {
+            renderVideos();
+        }
+    }
+
+    function calculateTotal() {
+        const total = wishlist
+            .filter(item => !item.purchased)
+            .reduce((sum, item) => sum + Number(item.price || 0), 0);
+        totalPriceEl.textContent = `${total.toFixed(2)}€`;
+    }
+
+    function getFilteredItems() {
+        const statusFilter = filterStatusInput.value;
+        const categoryFilter = filterCategoryInput.value;
+        const priorityFilter = filterPriorityInput.value;
+        const minPrice = filterMinPriceInput.value === '' ? null : Number(filterMinPriceInput.value);
+        const maxPrice = filterMaxPriceInput.value === '' ? null : Number(filterMaxPriceInput.value);
+        const sortMode = sortModeInput.value;
+
+        const filtered = wishlist
+            .map((item, index) => ({ item, index }))
+            .filter(({ item }) => {
+                const statusMatches =
+                    statusFilter === 'all' ||
+                    (statusFilter === 'pending' && !item.purchased) ||
+                    (statusFilter === 'purchased' && item.purchased);
+                const categoryMatches = categoryFilter === 'all' || item.category === categoryFilter;
+                const priorityMatches = priorityFilter === 'all' || item.priority === priorityFilter;
+                const minPriceMatches = minPrice === null || Number(item.price) >= minPrice;
+                const maxPriceMatches = maxPrice === null || Number(item.price) <= maxPrice;
+
+                return statusMatches && categoryMatches && priorityMatches && minPriceMatches && maxPriceMatches;
+            });
+
+        if (sortMode === 'priority') {
+            filtered.sort((a, b) => priorityWeight[a.item.priority] - priorityWeight[b.item.priority]);
+        } else if (sortMode === 'price-asc') {
+            filtered.sort((a, b) => Number(a.item.price) - Number(b.item.price));
+        } else if (sortMode === 'price-desc') {
+            filtered.sort((a, b) => Number(b.item.price) - Number(a.item.price));
+        } else if (sortMode === 'category') {
+            filtered.sort((a, b) => a.item.category.localeCompare(b.item.category));
+        } else if (sortMode === 'status') {
+            filtered.sort((a, b) => Number(a.item.purchased) - Number(b.item.purchased));
+        }
+
+        return filtered;
+    }
+
+    function renderRanking() {
+        const rankedItems = wishlist
+            .map((item, index) => ({ item, index }))
+            .filter(({ item }) => !item.purchased)
+            .sort((a, b) => {
+                const priorityDiff = priorityWeight[a.item.priority] - priorityWeight[b.item.priority];
+                if (priorityDiff !== 0) return priorityDiff;
+                return Number(a.item.price) - Number(b.item.price);
+            })
+            .slice(0, 5);
+
+        if (rankedItems.length === 0) {
+            rankingPanel.style.display = 'none';
+            rankingList.innerHTML = '';
+            return;
+        }
+
+        rankingPanel.style.display = 'block';
+        rankingList.innerHTML = rankedItems.map(({ item }, position) => `
+            <div class="ranking-item">
+                <span class="ranking-number">${position + 1}</span>
+                <span class="ranking-name" title="${escapeAttr(item.name)}">${escapeHtml(item.name)}</span>
+                <span class="ranking-price">${Number(item.price).toFixed(2)}€</span>
+            </div>
+        `).join('');
+    }
+
+    function renderItems() {
+        const visibleItems = getFilteredItems();
+        const isManualSort = sortModeInput.value === 'manual';
+        itemsContainer.innerHTML = '';
+
+        if (wishlist.length === 0) {
+            itemsContainer.innerHTML = `<div class="empty-state">No hay elementos en tu arsenal de deseos. ¡Añade el primero!</div>`;
+            return;
+        }
+
+        if (visibleItems.length === 0) {
+            itemsContainer.innerHTML = `<div class="empty-state">No hay elementos que coincidan con los filtros.</div>`;
+            return;
+        }
+
+        visibleItems.forEach(({ item, index }) => {
+            const card = document.createElement('div');
+            const safeName = escapeHtml(item.name);
+            const safeCategory = escapeHtml(item.category);
+            const safeNotes = escapeHtml(item.notes);
+            const safeLink = escapeAttr(item.link);
+            const safeImage = escapeAttr(item.imgUrl);
+            const safePriority = escapeAttr(item.priority);
+            const moveUpDisabled = !isManualSort || index === 0 ? 'disabled' : '';
+            const moveDownDisabled = !isManualSort || index === wishlist.length - 1 ? 'disabled' : '';
+            const moveUpTitle = isManualSort ? 'Subir artículo' : 'Disponible solo con orden manual';
+            const moveDownTitle = isManualSort ? 'Bajar artículo' : 'Disponible solo con orden manual';
+
+            card.className = `item-card ${item.purchased ? 'purchased' : ''}`;
+
+            const imgContent = item.imgUrl
+                ? `<img src="${safeImage}" alt="${safeName}" class="item-img" onerror="this.src='${fallbackImage}'">`
+                : `<div class="item-img-placeholder">📦</div>`;
+
+            card.innerHTML = `
+                    <div class="item-img-container">
+                        <span class="item-category">${safeCategory}</span>
+                        <button class="btn-check-status" onclick="togglePurchased(${index})" title="${item.purchased ? 'Marcar como pendiente' : 'Marcar como comprado'}">
+                            ${item.purchased ? '✓' : '◦'}
+                        </button>
+                        ${imgContent}
+                    </div>
+                    <div class="item-details">
+                        <h3 class="item-title" title="${safeName}">${safeName}</h3>
+                        <div class="item-price">${Number(item.price).toFixed(2)}€</div>
+                        <div class="item-meta">
+                            <span class="priority-badge priority-${safePriority}">Prioridad ${priorityLabels[item.priority] || 'Media'}</span>
+                        </div>
+                        ${item.notes ? `<div class="item-notes">${safeNotes}</div>` : ''}
+                        <div class="item-actions">
+                            ${item.link ? `<a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn-shop">Ver Tienda</a>` : `<span class="btn-shop" style="opacity:0.4; cursor:not-allowed;">Sin Link</span>`}
+                            <button class="btn-move" onclick="moveItem(${index}, -1)" title="${moveUpTitle}" ${moveUpDisabled}>↑</button>
+                            <button class="btn-move" onclick="moveItem(${index}, 1)" title="${moveDownTitle}" ${moveDownDisabled}>↓</button>
+                            <button class="btn-duplicate" onclick="duplicateItem(${index})" title="Duplicar artículo">⧉</button>
+                            <button class="btn-edit" onclick="startEditItem(${index})" title="Editar artículo">✎</button>
+                            <button class="btn-delete" onclick="deleteItem(${index})" title="Eliminar artículo">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            itemsContainer.appendChild(card);
+        });
+    }
+
+    function setFormMode(mode) {
+        const isEditing = mode === 'edit';
+        formTitle.textContent = isEditing ? 'Editar Equipamiento' : 'Añadir Equipamiento';
+        submitButton.textContent = isEditing ? 'Guardar Cambios' : 'Añadir a la Lista';
+        cancelEditButton.classList.toggle('is-hidden', !isEditing);
+    }
+
+    function setImagePreview(src) {
+        imagePreview.src = src || '';
+        imagePreview.classList.toggle('has-image', Boolean(src));
+    }
+
+    function clearImage() {
+        currentImageData = '';
+        imgUrlInput.value = '';
+        imgFileInput.value = '';
+        setImagePreview('');
+    }
+
+    function resetFormMode() {
+        editingIndex = null;
+        form.reset();
+        clearImage();
+        setFormMode('add');
+    }
+
+    function getFormItem() {
+        return {
+            name: nameInput.value.trim(),
+            category: categoryInput.value,
+            price: parseFloat(priceInput.value),
+            priority: priorityInput.value,
+            link: linkInput.value.trim(),
+            imgUrl: currentImageData || imgUrlInput.value.trim(),
+            notes: notesInput.value.trim()
+        };
+    }
+
+    function readImageFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            currentImageData = reader.result;
+            imgUrlInput.value = '';
+            setImagePreview(currentImageData);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const itemData = getFormItem();
+
+        if (editingIndex !== null) {
+            wishlist[editingIndex] = {
+                ...wishlist[editingIndex],
+                ...itemData
+            };
+            updateApp();
+            resetFormMode();
+            return;
+        }
+
+        wishlist.push({
+            ...itemData,
+            purchased: false
+        });
+        updateApp();
+        resetFormMode();
+    });
+
+    cancelEditButton.addEventListener('click', resetFormMode);
+
+    imgUrlInput.addEventListener('input', () => {
+        currentImageData = '';
+        imgFileInput.value = '';
+        setImagePreview(imgUrlInput.value.trim());
+    });
+
+    uploadImageButton.addEventListener('click', () => imgFileInput.click());
+    clearImageButton.addEventListener('click', clearImage);
+    imgFileInput.addEventListener('change', () => readImageFile(imgFileInput.files[0]));
+
+    document.addEventListener('paste', (event) => {
+        const imageItem = Array.from(event.clipboardData?.items || [])
+            .find(item => item.type.startsWith('image/'));
+
+        if (imageItem) {
+            readImageFile(imageItem.getAsFile());
+        }
+    });
+
+    [filterStatusInput, filterCategoryInput, filterPriorityInput, sortModeInput].forEach((control) => {
+        control.addEventListener('change', renderItems);
+    });
+
+    [filterMinPriceInput, filterMaxPriceInput].forEach((control) => {
+        control.addEventListener('input', renderItems);
+    });
+
+    resetFiltersButton.addEventListener('click', () => {
+        filterStatusInput.value = 'all';
+        filterCategoryInput.value = 'all';
+        filterPriorityInput.value = 'all';
+        filterMinPriceInput.value = '';
+        filterMaxPriceInput.value = '';
+        sortModeInput.value = 'manual';
+        renderItems();
+    });
+
+    exportButton.addEventListener('click', () => {
+        const data = JSON.stringify(wishlist, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'airsoft-wishlist.json';
+        link.click();
+        URL.revokeObjectURL(url);
+    });
+
+    importButton.addEventListener('click', () => importFileInput.click());
+    importFileInput.addEventListener('change', () => {
+        const file = importFileInput.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const imported = JSON.parse(reader.result);
+
+                if (!Array.isArray(imported)) {
+                    throw new Error('Formato no válido');
+                }
+
+                wishlist = normalizeWishlist(imported);
+                resetFormMode();
+                updateApp();
+            } catch (error) {
+                alert('No se pudo importar el archivo. Tiene que ser un JSON exportado desde esta wishlist.');
+            } finally {
+                importFileInput.value = '';
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    tabButtons.forEach((button) => {
+        button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+    });
+
+    window.startEditItem = function(index) {
+        const item = wishlist[index];
+        editingIndex = index;
+        currentImageData = item.imgUrl && item.imgUrl.startsWith('data:image/') ? item.imgUrl : '';
+        nameInput.value = item.name;
+        categoryInput.value = item.category;
+        priceInput.value = item.price;
+        priorityInput.value = item.priority || 'medium';
+        linkInput.value = item.link || '';
+        imgUrlInput.value = currentImageData ? '' : item.imgUrl || '';
+        notesInput.value = item.notes || '';
+        setImagePreview(item.imgUrl || '');
+        setFormMode('edit');
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        nameInput.focus();
+    };
+
+    window.togglePurchased = function(index) {
+        wishlist[index].purchased = !wishlist[index].purchased;
+        updateApp();
+    };
+
+    window.moveItem = function(index, direction) {
+        const newIndex = index + direction;
+
+        if (sortModeInput.value !== 'manual' || newIndex < 0 || newIndex >= wishlist.length) {
+            return;
+        }
+
+        const [item] = wishlist.splice(index, 1);
+        wishlist.splice(newIndex, 0, item);
+
+        if (editingIndex === index) {
+            editingIndex = newIndex;
+        } else if (editingIndex === newIndex) {
+            editingIndex = index;
+        }
+
+        updateApp();
+    };
+
+    window.duplicateItem = function(index) {
+        const original = wishlist[index];
+        const copy = {
+            ...original,
+            name: `${original.name} (copia)`,
+            purchased: false
+        };
+
+        wishlist.splice(index + 1, 0, copy);
+
+        if (editingIndex !== null && index < editingIndex) {
+            editingIndex += 1;
+        }
+
+        updateApp();
+    };
+
+    window.deleteItem = function(index) {
+        wishlist.splice(index, 1);
+        if (editingIndex === index) {
+            resetFormMode();
+        } else if (editingIndex !== null && index < editingIndex) {
+            editingIndex -= 1;
+        }
+        updateApp();
+    };
+
+    updateApp();
+</script>
+</body>
+</html>
