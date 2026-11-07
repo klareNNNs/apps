@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Recetas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!--
+    ========================================================================
+    AÑADIR UNA RECETA AL ÍNDICE
+    ========================================================================
+    Por cada receta, duplica un bloque <a class="card"> dentro de .grid:
+      href        apunta al archivo de la receta (ej. "paella.html")
+      data-cat    categoría (debe coincidir con una pestaña .tab)
+      data-search palabras clave extra para la búsqueda (ingredientes…)
+    La foto de la tarjeta sale de img/<receta>.jpg (o usa el placeholder 🍽️).
+    Si añades una categoría nueva, añade también su <button class="tab">.
+    ========================================================================
+  -->
+  <main class="page page--wide">
+    <header class="topbar">
+      <div class="brand">
+        <span class="eyebrow">Cocina</span>
+        <h1>Mis Recetas</h1>
+      </div>
+      <a class="back-pill" href="../index.html">← Apps</a>
+    </header>
+
+    <div class="controls">
+      <input id="search" class="search" type="search" placeholder="Buscar por nombre o ingrediente…" autocomplete="off">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-cat="Todas">Todas</button>
+        <button class="tab" data-cat="Principales">Principales</button>
+        <button class="tab" data-cat="Cenas rápidas">Cenas rápidas</button>
+        <!-- Añade aquí una pestaña por cada categoría nueva -->
+      </div>
+      <span id="count" class="count"></span>
+    </div>
+
+    <section class="grid" id="grid">
+
+      <a class="card" href="pollo-teriyaki.html" data-cat="Principales" data-search="pollo soja miel ajo arroz japonesa contramuslo teriyaki">
+        <img class="card-img" src="img/teriyaki-hero.png" alt="Pollo teriyaki con arroz" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Principales</span>
+          <h2>Pollo Teriyaki con Arroz</h2>
+          <div class="card-meta"><span>⏱ 20 min</span><span>🍴 2 raciones</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="katsu-curry.html" data-cat="Principales" data-search="pollo curry japones panko arroz cebolla katsu rebozado golden">
+        <img class="card-img" src="img/katsu-hero.jpg" alt="Katsu curry japonés" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Principales</span>
+          <h2>Katsu Curry Japonés</h2>
+          <div class="card-meta"><span>⏱ 25 min</span><span>🍴 2 raciones</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="korokke.html" data-cat="Principales" data-search="croquetas korokke patata ternera cebolla panko fritura japonesa tonkatsu">
+        <img class="card-img" src="img/korokke-hero.jpg" alt="Croquetas japonesas korokke" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Principales</span>
+          <h2>Croquetas Japonesas (Korokke)</h2>
+          <div class="card-meta"><span>⏱ 70 min</span><span>🍴 8 ud.</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="fideos-arroz-verduras.html" data-cat="Principales" data-search="fideos arroz verduras china soja curry laoganma salteado noodles vegetariano juliana">
+        <img class="card-img" src="img/fideos-hero.jpg" alt="Fideos de arroz chinos con verduras" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Principales</span>
+          <h2>Fideos de Arroz Chinos con Verduras</h2>
+          <div class="card-meta"><span>⏱ 20 min</span><span>🍴 2 raciones</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="fideos-asiaticos.html" data-cat="Principales" data-search="fideos asiaticos pasta tofu huevo verduras shiitake soja sriracha salteado rapido 20 minutos">
+        <img class="card-img" src="img/fideos2-hero.jpg" alt="Fideos asiáticos en 20 minutos" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Principales</span>
+          <h2>Fideos Asiáticos en 20 Minutos</h2>
+          <div class="card-meta"><span>⏱ 20 min</span><span>🍴 2 raciones</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="wrap-proteico.html" data-cat="Cenas rápidas" data-search="wrap tortilla peperoni mozzarella pavo huevo proteina cena rapida fit crujiente">
+        <img class="card-img" src="img/wrap-proteico-hero.jpg" alt="Wrap crujiente alto en proteína" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">Cenas rápidas</span>
+          <h2>Wrap Crujiente Alto en Proteína</h2>
+          <div class="card-meta"><span>⏱ 10 min</span><span>🍴 1 ración</span><span>📊 Fácil</span></div>
+        </div>
+      </a>
+
+      <!-- ============ PLANTILLA DE TARJETA (copia y edita) ============
+      <a class="card" href="NOMBRE.html" data-cat="CATEGORIA" data-search="palabras clave">
+        <img class="card-img" src="img/NOMBRE.jpg" alt="TÍTULO" loading="lazy"
+             onerror="this.outerHTML='&lt;div class=&quot;card-img placeholder&quot;&gt;🍽️&lt;/div&gt;'">
+        <div class="card-body">
+          <span class="card-cat">CATEGORIA</span>
+          <h2>TÍTULO</h2>
+          <div class="card-meta"><span>⏱ 30 min</span><span>🍴 4 raciones</span></div>
+        </div>
+      </a>
+      =============================================================== -->
+
+    </section>
+    <p class="empty" id="empty" style="display:none">Aún no hay recetas. Añade la primera.</p>
+  </main>
+
+  <script>
+    // Búsqueda + filtro por categoría: solo togglea visibilidad de tarjetas
+    // estáticas (sin innerHTML). Lee título/categoría/data-search del DOM.
+    const cards = Array.from(document.querySelectorAll(".card"));
+    const tabs = document.getElementById("tabs");
+    const searchEl = document.getElementById("search");
+    const countEl = document.getElementById("count");
+    const emptyEl = document.getElementById("empty");
+    let activeCat = "Todas";
+    let query = "";
+
+    function apply() {
+      let shown = 0;
+      for (const card of cards) {
+        const cat = card.dataset.cat || "";
+        const title = (card.querySelector("h2")?.textContent || "").toLowerCase();
+        const extra = (card.dataset.search || "").toLowerCase();
+        const okCat = activeCat === "Todas" || cat === activeCat;
+        const okQuery = !query || title.includes(query) || extra.includes(query);
+        const visible = okCat && okQuery;
+        card.style.display = visible ? "" : "none";
+        if (visible) shown++;
+      }
+      countEl.textContent = `${shown} receta${shown === 1 ? "" : "s"}`;
+      emptyEl.style.display = shown ? "none" : "block";
+    }
+
+    tabs.addEventListener("click", e => {
+      const btn = e.target.closest(".tab");
+      if (!btn) return;
+      activeCat = btn.dataset.cat;
+      tabs.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === btn));
+      apply();
+    });
+    searchEl.addEventListener("input", () => { query = searchEl.value.trim().toLowerCase(); apply(); });
+
+    apply();
+  </script>
+</body>
+</html>

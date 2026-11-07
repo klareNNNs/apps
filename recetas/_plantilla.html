@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- PLANTILLA DE RECETA — copia este archivo y renómbralo (ej. paella.html).
+       Sustituye los textos en MAYÚSCULAS y las rutas de img/.
+       Las imágenes van en recetas/img/. Los vídeos: iframe de YouTube o <video>. -->
+  <title>NOMBRE RECETA · Mis Recetas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span class="eyebrow">CATEGORÍA</span>
+        <h1>NOMBRE RECETA</h1>
+      </div>
+      <a class="back-pill" href="index.html">← Recetas</a>
+    </header>
+
+    <img class="hero" src="img/NOMBRE-hero.jpg" alt="NOMBRE RECETA">
+
+    <div class="recipe-meta">
+      <span class="chip">⏱ <b>30 min</b></span>
+      <span class="chip">🍴 <b>4 raciones</b></span>
+      <span class="chip">📊 <b>Media</b></span>
+    </div>
+
+    <div class="layout">
+      <aside class="panel">
+        <h2 class="section">Ingredientes</h2>
+        <ul class="ingredients">
+          <li>INGREDIENTE 1</li>
+          <li>INGREDIENTE 2</li>
+        </ul>
+      </aside>
+
+      <div>
+        <h2 class="section">Preparación</h2>
+        <ol class="steps">
+          <li>PASO 1.</li>
+          <li>PASO 2.
+            <!-- imagen de paso opcional: <img src="img/NOMBRE-paso2.jpg" alt=""> -->
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- GALERÍA (opcional) -->
+    <section style="margin-top:36px">
+      <h2 class="section">Galería</h2>
+      <div class="media-grid">
+        <img src="img/NOMBRE-1.jpg" alt="">
+        <img src="img/NOMBRE-2.jpg" alt="">
+      </div>
+    </section>
+
+    <!-- VÍDEO (opcional) — YouTube embed o <video> local -->
+    <section style="margin-top:36px">
+      <h2 class="section">Vídeo</h2>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Vídeo receta"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <a class="source-link" href="URL_ORIGINAL" target="_blank" rel="noopener">Fuente original ↗</a>
+  </main>
+</body>
+</html>
